@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "guacamole.portal.name" . }}
+spec:
+  replicas: {{ .Values.portal.replicas}}
+  selector:
+    matchLabels:
+      app: {{ include "guacamole.portal.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "guacamole.portal.name" . }}
+    spec:
+      serviceAccountName: {{ include "guacamole.portal.name" . }}
+      nodeSelector:
+        {{- toYaml .Values.portal.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.portal.tolerations | nindent 8 }}
+        
+      volumes:
+      {{ if .Values.portal.volumes }}
+      {{ toYaml .Values.portal.volumes | nindent 6 }}
+      {{ end }}
+
+      containers:
+      - name: portal
+        image: {{ .Values.portal.image }}
+        env:
+        - name: GUACD_HOSTNAME
+          value: {{ include "guacamole.daemon.name" . }}
+
+        {{ if eq .Values.database.type "postgres" }}
+        - name: POSTGRESQL_HOSTNAME
+          value: {{ .Values.database.hostname }}
+        - name: POSTGRESQL_PORT
+          value: {{ .Values.database.port | quote }}
+        - name: POSTGRESQL_DATABASE
+          value: {{ .Values.database.database }}
+        - name: POSTGRESQL_USER
+          value: {{ .Values.database.user }}
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "guacamole.password.secret" . }}
+              key: {{ .Values.database.password.key }}
+        - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
+          value: "true"
+        {{ end }}
+
+        {{ if eq .Values.database.type "mysql" }}
+        - name: MYSQL_HOSTNAME
+          value: {{ .Values.database.hostname }}
+        - name: MYSQL_PORT
+          value: {{ .Values.database.port }}
+        - name: MYSQL_DATABASE
+          value: {{ .Values.database.database }}
+        - name: MYSQL_USER
+          value: {{ .Values.database.user }}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "guacamole.password.secret" . }}
+              key: {{ .Values.database.password.key }}
+        - name: MYSQL_AUTO_CREATE_ACCOUNTS
+          value: "true"
+        {{ end }}
+
+        {{ if .Values.env }}
+        {{ toYaml .Values.env | nindent 8 }}
+        {{ end }}
+        
+        volumeMounts:
+        {{ if .Values.portal.volumeMounts }}
+        {{ toYaml .Values.portal.volumeMounts | nindent 8 }}
+        {{ end }}
+          
+        resources:
+          {{- toYaml .Values.portal.resources | nindent 10 }}
+
+        ports:
+        - containerPort: {{ .Values.portal.port }}
+          name: http
+          protocol: TCP

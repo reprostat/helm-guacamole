@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "guacamole.daemon.name" . }}
+spec:
+  replicas: {{ .Values.daemon.replicas}}
+  selector:
+    matchLabels:
+      app: {{ include "guacamole.daemon.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "guacamole.daemon.name" . }}
+    spec:
+      serviceAccountName: {{ include "guacamole.daemon.name" . }}
+      nodeSelector:
+        {{- toYaml .Values.daemon.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.daemon.tolerations | nindent 8 }}
+        
+      volumes:
+      {{ if .Values.daemon.volumes }}
+      {{ toYaml .Values.daemon.volumes | nindent 6 }}
+      {{ end }}
+
+      containers:
+      - name: daemon
+        image: {{ .Values.daemon.image }}
+        env:
+        {{ if .Values.env }}
+        {{ toYaml .Values.env | nindent 8 }}
+        {{ end }}
+        
+        volumeMounts:
+        {{ if .Values.daemon.volumeMounts }}
+        {{ toYaml .Values.daemon.volumeMounts | nindent 8 }}
+        {{ end }}
+          
+        resources:
+          {{- toYaml .Values.daemon.resources | nindent 10 }}
+
+        ports:
+        - containerPort: {{ .Values.daemon.port }}
+          name: daemon
+          protocol: TCP

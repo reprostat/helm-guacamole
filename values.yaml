@@ -1,0 +1,35 @@
+daemon:
+  image: guacamole/guacd:1.5.4
+  replicas: 1
+  nodeSelector: {}
+  tolerations: []
+  volumes: []
+  volumeMounts: []
+  env: []
+  resources: {}
+  port: "4822"
+  service:
+    port: "4822"
+
+portal:
+  image: guacamole/guacamole:1.5.4
+  replicas: 1
+  nodeSelector: {}
+  tolerations: []
+  volumes: []
+  volumeMounts: []
+  env: []
+  resources: {}
+  port: "8080"
+  service:
+    port: "8080"
+
+database:
+  type: postgres
+  hostname: ""
+  port: "5432"
+  database: ""
+  user: ""
+  password:
+    secret: ""
+    key: "db-password"
