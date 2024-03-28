@@ -28,7 +28,7 @@ spec:
         image: {{ .Values.portal.image }}
         env:
         - name: GUACD_HOSTNAME
-          value: {{ include "guacamole.daemon.name" . }}
+          value: daemon
 
         {{ if eq .Values.database.type "postgres" }}
         - name: POSTGRESQL_HOSTNAME

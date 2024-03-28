@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "guacamole.client.name" . }}
+spec:
+  replicas: {{ .Values.client.replicas}}
+  selector:
+    matchLabels:
+      app: {{ include "guacamole.client.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "guacamole.client.name" . }}
+    spec:
+      serviceAccountName: {{ include "guacamole.client.name" . }}
+      nodeSelector:
+        {{- toYaml .Values.client.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.client.tolerations | nindent 8 }}
+        
+      volumes:
+      {{ if .Values.client.volumes }}
+      {{ toYaml .Values.client.volumes | nindent 6 }}
+      {{ end }}
+
+      containers:
+      - name: client
+        image: {{ .Values.client.image }}
+        env:
+
+        {{ if .Values.env }}
+        {{ toYaml .Values.env | nindent 8 }}
+        {{ end }}
+        
+        volumeMounts:
+        {{ if .Values.client.volumeMounts }}
+        {{ toYaml .Values.client.volumeMounts | nindent 8 }}
+        {{ end }}
+          
+        resources:
+          {{- toYaml .Values.client.resources | nindent 10 }}
+
+        ports:
+        - containerPort: {{ .Values.client.port }}
+          name: vnc
+          protocol: TCP

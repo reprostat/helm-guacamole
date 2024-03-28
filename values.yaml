@@ -23,13 +23,35 @@ portal:
   port: "8080"
   service:
     port: "8080"
+  ingress:
+    enabled: true
+    annotations: {}
+    className: nginx
+    host: guacamole.lsc-sde.local
+    tls:
+      enabled: false
+      secretName: "guacamole-tls"
+
+client:
+  enabled: true
+  image: lscsde/analytics-vnc-client:0.1.3
+  replicas: 1
+  nodeSelector: {}
+  tolerations: []
+  volumes: []
+  volumeMounts: []
+  env: []
+  resources: {}
+  port: "5900"
+  service:
+    port: "5900"
 
 database:
   type: postgres
-  hostname: ""
+  hostname: "cluster.lsc-sde.local"
   port: "5432"
-  database: ""
-  user: ""
+  database: "guacamole"
+  user: "guac@cluster.lsc-sde.local"
   password:
-    secret: ""
+    secret: "guacamole"
     key: "db-password"
