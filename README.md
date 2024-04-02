@@ -44,6 +44,7 @@ helm upgrade -i guacamole -n guacamole --create-namespace ./
 * go back to the home screen and connect to the client, the password will be *1234*, this should load firefox inside of a VNC session
 
 ![Logged in to firefox browser via Guacamole](./docs/image.png)
+![Logged in to jupyterhub via firefox browser via Guacamole](./docs/jupyter-via-guacamole.png)
 
 #### Notes
 It does appear that this model could work, though a number of issues exist that would need to be solved in order to make this solution work:
