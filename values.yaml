@@ -34,7 +34,7 @@ portal:
 
 client:
   enabled: true
-  image: lscsde/analytics-vnc-client:0.1.3
+  image: lscsde/analytics-vnc-client:0.1.4
   replicas: 1
   nodeSelector: {}
   tolerations: []
