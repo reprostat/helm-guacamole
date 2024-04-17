@@ -11,5 +11,5 @@ jobs:
     uses: lsc-sde/lsc-sde/.github/workflows/helm-release.yaml@main
     with:
       directory: iac/helm/guacamole
-      yamlPath: guacamole_chart_version
+      yamlPath: guacamole
     secrets: inherit
