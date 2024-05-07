@@ -4,10 +4,6 @@ kind: Ingress
 metadata:  
   name: portal
   annotations: 
-    {{ if .Values.portal.ingress.tls.enabled }}
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    {{ end }}
-    
     {{ if .Values.portal.ingress.annotations }}          
     {{ toYaml .Values.portal.ingress.annotations | nindent 4 }}
     {{ end }}
