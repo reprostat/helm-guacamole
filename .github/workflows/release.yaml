@@ -10,6 +10,6 @@ jobs:
   release:
     uses: lsc-sde/lsc-sde/.github/workflows/helm-release.yaml@main
     with:
-      directory: iac/helm/guacamole
+      directory: products/sde-3rd-party/guacamole/iac-helm-guacamole
       yamlPath: guacamole
     secrets: inherit
