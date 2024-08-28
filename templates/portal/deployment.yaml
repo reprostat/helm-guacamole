@@ -66,8 +66,8 @@ spec:
           value: "true"
         {{ end }}
 
-        {{ if .Values.env }}
-        {{ toYaml .Values.env | nindent 8 }}
+        {{ if .Values.portal.env }}
+        {{ toYaml .Values.portal.env | nindent 8 }}
         {{ end }}
         
         volumeMounts:
