@@ -6,6 +6,7 @@ This version is based on the [Helm chart](https://github.com/lsc-sde/iac-helm-gu
 The major modifications are:
 - removal of the client as it is typically deployed independently
 - implementing LDAP authentication and configuration management
+- replacing chart deployment with a more generic one
 
 ## Deployement
 
