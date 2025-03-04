@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  guacamole:
+  - apiVersion: v2
+    appVersion: 1.5.5
+    created: "2025-03-04T15:45:05.103004711Z"
+    description: Helm chart for guacamole
+    digest: 28b5ad63f0a39336eb09c5849e567b2b6200f33b21b42055b20b6a548897bc56
+    name: guacamole
+    type: application
+    urls:
+    - guacamole-0.2.0.tgz
+    version: 0.2.0
+generated: "2025-03-04T15:45:05.102536145Z"
