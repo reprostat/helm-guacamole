@@ -6,7 +6,6 @@ curl -fsSL -o ../get_helm.sh https://raw.githubusercontent.com/helm/helm/master/
 chmod 700 ../get_helm.sh
 ../get_helm.sh
 
-#repo_uri="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 repo_uri="https://x-access-token:${DEPLOY_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
 remote_name="origin"
