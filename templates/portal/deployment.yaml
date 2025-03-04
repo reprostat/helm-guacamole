@@ -22,7 +22,11 @@ spec:
       {{ if .Values.portal.volumes }}
       {{ toYaml .Values.portal.volumes | nindent 6 }}
       {{ end }}
-
+      
+      {{- if or .Values.image.pullSecrets .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- include "guacamole.imagePullSecrets" (dict "root" $root "imagePullSecrets" .Values.image.pullSecrets) | nindent 2 }}
+      {{- end }}
       containers:
       - name: portal
         image: {{ .Values.portal.image }}
