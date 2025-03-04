@@ -1,57 +1,43 @@
-daemon:
-  image: guacamole/guacd:1.5.4
-  replicas: 1
-  nodeSelector: {}
-  tolerations: []
-  volumes: []
-  volumeMounts: []
-  env: []
-  resources: {}
-  port: "4822"
-  service:
-    port: "4822"
+global:
+  imagePullSecrets: []
 
-portal:
-  image: guacamole/guacamole:1.5.4
+# guacd
+daemon:
+  image: guacamole/guacd:1.5.5
   replicas: 1
-  nodeSelector: {}
-  tolerations: []
-  volumes: []
-  volumeMounts: []
-  env: []
-  resources: {}
-  port: "8080"
+  port: 4822
+  
   service:
-    port: "8080"
+    port: 4822
+
+# guacamole
+portal:
+  image: guacamole/guacamole:1.5.5
+  replicas: 1
+  port: 8080
+  
+  service:
+    port: 8080
+  
   ingress:
     enabled: true
     annotations: {}
     className: nginx
-    host: guacamole.lsc-sde.local
+    host: guacamole.local
     tls:
       enabled: false
-      secretName: "guacamole-tls"
+      secretName: guacamole-tls
 
-client:
-  enabled: true
-  image: lscsde/analytics-vnc-client:0.1.4
-  replicas: 1
-  nodeSelector: {}
-  tolerations: []
-  volumes: []
-  volumeMounts: []
-  env: []
-  resources: {}
-  port: "5900"
-  service:
-    port: "5900"
-
+# connections
 database:
-  type: postgres
-  hostname: "cluster.lsc-sde.local"
-  port: "5432"
-  database: "guacamole"
-  user: "guac@cluster.lsc-sde.local"
-  password:
-    secret: "guacamole"
-    key: "db-password"
+  type: ldap
+  hostname: ldap.local
+  port: 389
+  encryptionMethod: starttls
+  bindSecret: guacamole-ldap
+  maxSearchResults: 1000
+  userBaseDN: ou=people,dc=example,dc=com
+  usernameAttribute: uid
+  memberAttribute: uniqueMember
+  memberAttributeType: dn
+  guacConfigBaseDN: ou=guacConfigs,ou=groups,dc=example,dc=com

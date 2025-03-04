@@ -66,6 +66,37 @@ spec:
           value: "true"
         {{ end }}
 
+        {{ if eq .Values.database.type "ldap" }}
+        - name: LDAP_HOSTNAME
+          value: {{ .Values.database.hostname }}
+        - name: LDAP_PORT
+          value: {{ .Values.database.port }}
+        - name: LDAP_ENCRYPTION_METHOD
+          value: {{ .Values.database.encryptionMethod }}
+        - name: LDAP_SEARCH_BIND_DN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.bindSecret }}
+              key: LDAP_bindDN
+        - name: LDAP_SEARCH_BIND_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.database.bindSecret }}
+              key: LDAP_bindPW
+        - name: LDAP_MAX_SEARCH_RESULTS
+          value: {{ .Values.database.maxSearchResults }}
+        - name: LDAP_USER_BASE_DN
+          value: {{ .Values.database.userBaseDN }}
+        - name: LDAP_USERNAME_ATTRIBUTE
+          value: {{ .Values.database.usernameAttribute }}
+        - name: LDAP_MEMBER_ATTRIBUTE
+          value: {{ .Values.database.memberAttribute }}
+        - name: LDAP_MEMBER_ATTRIBUTE_TYPE
+          value: {{ .Values.database.memberAttributeType }}
+        - name: LDAP_CONFIG_BASE_DN
+          value: {{ .Values.database.guacConfigBaseDN }}
+        {{ end }}
+
         {{ if .Values.portal.env }}
         {{ toYaml .Values.portal.env | nindent 8 }}
         {{ end }}
