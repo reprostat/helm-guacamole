@@ -101,6 +101,11 @@ spec:
           value: {{ .Values.database.guacConfigBaseDN }}
         {{ end }}
 
+        {{ if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
+        - name: JAVA_OPTS
+          value: "-Djdk.security.allowNonCaAnchor=true"
+        {{ end }}
+
         {{ if .Values.portal.env }}
         {{ toYaml .Values.portal.env | nindent 8 }}
         {{ end }}
