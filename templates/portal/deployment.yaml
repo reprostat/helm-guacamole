@@ -108,7 +108,10 @@ spec:
 
         {{ if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
         - name: JAVA_OPTS
-          value: "-Djdk.security.allowNonCaAnchor=true"
+          value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Djdk.security.allowNonCaAnchor=true"
+        {{ else }}
+        - name: JAVA_OPTS
+          value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
         {{ end }}
 
         {{ if .Values.portal.env }}
@@ -133,3 +136,8 @@ spec:
         - containerPort: {{ .Values.portal.port }}
           name: http
           protocol: TCP
+
+      {{ if .Values.hostAliases }}
+      hostAliases:
+      {{ toYaml .Values.hostAliases | nindent 8 }}
+      {{ end }}      

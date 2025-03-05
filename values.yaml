@@ -43,3 +43,5 @@ database:
   memberAttribute: uniqueMember
   memberAttributeType: dn
   guacConfigBaseDN: ou=guacConfigs,ou=groups,dc=example,dc=com
+
+hostAliases: []
