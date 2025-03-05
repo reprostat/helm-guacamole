@@ -19,6 +19,11 @@ spec:
         {{- toYaml .Values.portal.tolerations | nindent 8 }}
         
       volumes:
+      {{ if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
+        - name: ldap-tls
+          secret:
+            secretName: {{ .Values.database.tlsSecretname }}
+      {{ end }}
       {{ if .Values.portal.volumes }}
       {{ toYaml .Values.portal.volumes | nindent 6 }}
       {{ end }}
@@ -111,6 +116,12 @@ spec:
         {{ end }}
         
         volumeMounts:
+        {{ if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
+          - name: ldap-tls
+            mountPath: /etc/ssl/certs/ldap-ca.pem
+            subPath: ca.crt
+            readOnly: true
+        {{ end }}
         {{ if .Values.portal.volumeMounts }}
         {{ toYaml .Values.portal.volumeMounts | nindent 8 }}
         {{ end }}

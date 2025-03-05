@@ -35,6 +35,7 @@ database:
   hostname: ldap.local
   port: 389
   encryptionMethod: starttls
+  tlsSecretname: guacamole-tls
   bindSecret: guacamole-ldap
   maxSearchResults: 1000
   userBaseDN: ou=people,dc=example,dc=com
