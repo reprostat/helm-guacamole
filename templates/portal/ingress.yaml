@@ -14,12 +14,13 @@ spec:
       http:
         paths:
           - pathType: Prefix
+            path: /            
             backend:
               service:
                 name: portal
                 port:
                   number: {{ .Values.portal.service.port }}
-            path: /guacamole
+            
 
   {{ if .Values.portal.ingress.tls.enabled }}
   tls:
