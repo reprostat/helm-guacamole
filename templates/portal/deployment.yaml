@@ -38,6 +38,8 @@ spec:
         env:
         - name: GUACD_HOSTNAME
           value: daemon
+        - name: JAVA_OPTS
+          value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
 
         {{ if eq .Values.database.type "postgres" }}
         - name: POSTGRESQL_HOSTNAME
@@ -106,20 +108,12 @@ spec:
           value: {{ .Values.database.guacConfigBaseDN }}
         {{ end }}
 
-        {{ if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
-        - name: JAVA_OPTS
-          value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Djdk.security.allowNonCaAnchor=true"
-        {{ else }}
-        - name: JAVA_OPTS
-          value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
-        {{ end }}
-
         {{ if .Values.portal.env }}
         {{ toYaml .Values.portal.env | nindent 8 }}
         {{ end }}
         
         volumeMounts:
-        {{ if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
+        {{ if and (eq .Values.database.type "ldap") (or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls")) }}
           - name: ldap-tls
             mountPath: /etc/ssl/certs/ldap-ca.pem
             subPath: ca.crt
