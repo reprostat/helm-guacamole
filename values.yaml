@@ -1,10 +1,10 @@
 global:
-  imagePullSecrets: []
+  # Kubernetes secret for pulling images
+  imagePullSecret: ~
 
 # guacd
 daemon:
   image: guacamole/guacd:1.5.5
-  pullSecrets: []
   replicas: 1
   port: 4822
   
@@ -14,7 +14,6 @@ daemon:
 # guacamole
 portal:
   image: guacamole/guacamole:1.5.5
-  pullSecrets: []
   replicas: 1
   port: 8080
   

@@ -23,9 +23,9 @@ spec:
       {{ toYaml .Values.daemon.volumes | nindent 6 }}
       {{ end }}
 
-      {{- if or .Values.image.pullSecrets .Values.global.imagePullSecrets }}
+      {{- if .Values.global.imagePullSecret }}
       imagePullSecrets:
-        {{- include "guacamole.imagePullSecrets" (dict "root" $root "imagePullSecrets" .Values.image.pullSecrets) | nindent 2 }}
+      - name: {{ .Values.global.imagePullSecret }}
       {{- end }}
       containers:
       - name: daemon
