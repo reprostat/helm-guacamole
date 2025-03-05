@@ -47,3 +47,8 @@ spec:
         - containerPort: {{ .Values.daemon.port }}
           name: daemon
           protocol: TCP
+
+      {{ if .Values.hostAliases }}
+      hostAliases:
+      {{ toYaml .Values.hostAliases | nindent 8 }}
+      {{ end }}      
