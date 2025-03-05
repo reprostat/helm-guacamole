@@ -3,9 +3,9 @@ entries:
   guacamole:
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.626090664Z"
+    created: "2025-03-05T15:11:52.253343033Z"
     description: Helm chart for guacamole
-    digest: 8f9fd5f98e4cbd0420b86358fca4be626e4a0c5fc1168a0a35e0b78f8e911639
+    digest: 9a27448d2e65bb10f139ce223be10c8279912647bc9bc2a7902aa55eba14ba81
     name: guacamole
     type: application
     urls:
@@ -13,7 +13,7 @@ entries:
     version: 0.2.8
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.625754692Z"
+    created: "2025-03-05T15:11:52.253023454Z"
     description: Helm chart for guacamole
     digest: ae82663d6f5c0257384ef1d64d6c66590390ed83818a7660ab29becfa07230cc
     name: guacamole
@@ -23,7 +23,7 @@ entries:
     version: 0.2.7
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.625429782Z"
+    created: "2025-03-05T15:11:52.252729233Z"
     description: Helm chart for guacamole
     digest: 90827ee964cdb2e49e2b93bca2c36138ec4c4449af60df21203f4958e693b099
     name: guacamole
@@ -33,7 +33,7 @@ entries:
     version: 0.2.6
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.62514177Z"
+    created: "2025-03-05T15:11:52.252426105Z"
     description: Helm chart for guacamole
     digest: 8b4d6cc020399be7592027aad18a5e68a7940403bda8241196b6bb4ddf0a9bfa
     name: guacamole
@@ -43,7 +43,7 @@ entries:
     version: 0.2.5
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.624826858Z"
+    created: "2025-03-05T15:11:52.252109703Z"
     description: Helm chart for guacamole
     digest: 5088d9d097f95000e947bbc1b43dd5ebe16cf087619a60609764f8f6fd5bb104
     name: guacamole
@@ -53,7 +53,7 @@ entries:
     version: 0.2.4
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.624498601Z"
+    created: "2025-03-05T15:11:52.2518144Z"
     description: Helm chart for guacamole
     digest: 3a7e398d647080c5aa73f528e33f78430844051b1571a518fd8fe64dd0af183b
     name: guacamole
@@ -63,7 +63,7 @@ entries:
     version: 0.2.3
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.624203245Z"
+    created: "2025-03-05T15:11:52.251503798Z"
     description: Helm chart for guacamole
     digest: 27b351105fe938e5214e382756e01a5141e6f9b941757c320d7000dd795cc79a
     name: guacamole
@@ -73,7 +73,7 @@ entries:
     version: 0.2.2
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.623856203Z"
+    created: "2025-03-05T15:11:52.251162569Z"
     description: Helm chart for guacamole
     digest: a980f41e6447df3238c3de1f033082cf98644d16d2e84dce0afb71e9f7e9a1a0
     name: guacamole
@@ -83,7 +83,7 @@ entries:
     version: 0.2.1
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-03-05T15:05:44.623244952Z"
+    created: "2025-03-05T15:11:52.250809387Z"
     description: Helm chart for guacamole
     digest: 28b5ad63f0a39336eb09c5849e567b2b6200f33b21b42055b20b6a548897bc56
     name: guacamole
@@ -91,4 +91,4 @@ entries:
     urls:
     - guacamole-0.2.0.tgz
     version: 0.2.0
-generated: "2025-03-05T15:05:44.622171554Z"
+generated: "2025-03-05T15:11:52.250279685Z"
