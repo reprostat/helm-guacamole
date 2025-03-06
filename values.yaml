@@ -13,7 +13,7 @@ daemon:
 
 # guacamole
 portal:
-  image: guacamole/guacamole:1.5.5
+  image: reprostat/guacamole:github
   replicas: 1
   port: 8080
   

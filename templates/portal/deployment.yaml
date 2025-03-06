@@ -106,6 +106,12 @@ spec:
           value: {{ .Values.database.memberAttributeType }}
         - name: LDAP_CONFIG_BASE_DN
           value: {{ .Values.database.guacConfigBaseDN }}
+        {{ if or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls") }}
+        - name: EXTRA_CACERT_ENABLED
+          value: "true"
+        - name: EXTRA_CACERT_SEARCH_PATH
+          value: "/opt/guacamole/certs"
+        {{ end }}          
         {{ end }}
 
         {{ if .Values.portal.env }}
@@ -115,7 +121,7 @@ spec:
         volumeMounts:
         {{ if and (eq .Values.database.type "ldap") (or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls")) }}
           - name: ldap-tls
-            mountPath: /etc/ssl/certs/ldap-ca.pem
+            mountPath: /opt/guacamole/certs/ldap-ca.crt
             subPath: ca.crt
             readOnly: true
         {{ end }}
