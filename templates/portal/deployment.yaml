@@ -35,6 +35,7 @@ spec:
       containers:
       - name: portal
         image: {{ .Values.portal.image }}
+        imagePullPolicy: {{ .Values.portal.image.pullPolicy | quote }}
         env:
         - name: GUACD_HOSTNAME
           value: daemon

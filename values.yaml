@@ -5,6 +5,7 @@ global:
 # guacd
 daemon:
   image: guacamole/guacd:1.5.5
+  pullPolicy: IfNotPresent
   replicas: 1
   port: 4822
   
@@ -14,6 +15,7 @@ daemon:
 # guacamole
 portal:
   image: reprostat/guacamole:github
+  pullPolicy: Always
   replicas: 1
   port: 8080
   

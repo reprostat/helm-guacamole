@@ -30,6 +30,7 @@ spec:
       containers:
       - name: daemon
         image: {{ .Values.daemon.image }}
+        imagePullPolicy: {{ .Values.daemon.image.pullPolicy | quote }}
         env:
         {{ if .Values.env }}
         {{ toYaml .Values.env | nindent 8 }}
