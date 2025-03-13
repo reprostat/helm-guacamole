@@ -36,7 +36,7 @@ daemon:
 # guacamole
 portal:
   image:
-    reprository: reprostat/guacamole
+    repository: reprostat/guacamole
     tag: github
     pullPolicy: Always
   replicas: 1

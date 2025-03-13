@@ -31,7 +31,7 @@ spec:
       {{- end }}
       containers:
       - name: daemon
-        image: {{ .Values.daemon.image.reprository }}:{{ default .Chart.AppVersion .Values.daemon.image.tag }}
+        image: {{ .Values.daemon.image.repository }}:{{ default .Chart.AppVersion .Values.daemon.image.tag }}
         imagePullPolicy: {{ .Values.daemon.image.pullPolicy | quote }}
         env:
         {{ if .Values.env }}

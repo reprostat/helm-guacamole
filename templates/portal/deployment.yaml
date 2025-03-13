@@ -36,7 +36,7 @@ spec:
       {{- end }}
       containers:
       - name: portal
-        image: {{ .Values.portal.image.reprository }}:{{ default .Chart.AppVersion .Values.portal.image.tag }}
+        image: {{ .Values.portal.image.repository }}:{{ default .Chart.AppVersion .Values.portal.image.tag }}
         imagePullPolicy: {{ .Values.portal.image.pullPolicy | quote }}
         env:
         - name: GUACD_HOSTNAME
