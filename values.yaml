@@ -4,9 +4,30 @@ global:
 
 # guacd
 daemon:
-  image: guacamole/guacd:1.5.5
-  pullPolicy: IfNotPresent
+  image: 
+    repository: guacamole/guacd
+    tag: ""
+    pullPolicy: IfNotPresent
   replicas: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+    behavior: {}
+      # scaleDown:
+      #  stabilizationWindowSeconds: 300
+      #  policies:
+      #   - type: Pods
+      #     value: 1
+      #     periodSeconds: 180
+      # scaleUp:
+      #   stabilizationWindowSeconds: 300
+      #   policies:
+      #   - type: Pods
+      #     value: 2
+      #     periodSeconds: 60
   port: 4822
   
   service:
@@ -14,9 +35,30 @@ daemon:
 
 # guacamole
 portal:
-  image: reprostat/guacamole:github
-  pullPolicy: Always
+  image:
+    reprository: reprostat/guacamole
+    tag: github
+    pullPolicy: Always
   replicas: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 50
+    targetMemoryUtilizationPercentage: 50
+    behavior: {}
+      # scaleDown:
+      #  stabilizationWindowSeconds: 300
+      #  policies:
+      #   - type: Pods
+      #     value: 1
+      #     periodSeconds: 180
+      # scaleUp:
+      #   stabilizationWindowSeconds: 300
+      #   policies:
+      #   - type: Pods
+      #     value: 2
+      #     periodSeconds: 60
   port: 8080
   
   service:

@@ -34,8 +34,8 @@ spec:
       {{- end }}
       containers:
       - name: portal
-        image: {{ .Values.portal.image }}
-        imagePullPolicy: {{ .Values.portal.pullPolicy | quote }}
+        image: {{ .Values.portal.image.reprository }}:{{ default .Chart.appVersion .Values.portal.image.tag }}
+        imagePullPolicy: {{ .Values.portal.image.pullPolicy | quote }}
         env:
         - name: GUACD_HOSTNAME
           value: daemon

@@ -1,0 +1,38 @@
+{{- if .Values.portal.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "guacamole.portal.name" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "guacamole.portal.name" . }}
+  minReplicas: {{ .Values.portal.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.portal.autoscaling.maxReplicas }}
+  metrics:
+  {{- with .Values.portal.autoscaling.metrics }}
+    {{- toYaml . | nindent 4 }}
+  {{- else }}
+    {{- with .Values.portal.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+    {{- with .Values.portal.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+  {{- end }}
+  {{- with .Values.portal.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
