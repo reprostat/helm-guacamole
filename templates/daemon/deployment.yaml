@@ -3,7 +3,9 @@ kind: Deployment
 metadata:
   name: {{ include "guacamole.daemon.name" . }}
 spec:
-  replicas: {{ .Values.daemon.replicas}}
+  {{- if not .Values.daemon.autoscaling.enabled }}
+  replicas: {{ .Values.daemon.replicas }}
+  {{- end }}  
   selector:
     matchLabels:
       app: {{ include "guacamole.daemon.name" . }}

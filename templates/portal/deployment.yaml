@@ -3,7 +3,9 @@ kind: Deployment
 metadata:
   name: {{ include "guacamole.portal.name" . }}
 spec:
-  replicas: {{ .Values.portal.replicas}}
+  {{- if not .Values.portal.autoscaling.enabled }}
+  replicas: {{ .Values.portal.replicas }}
+  {{- end }}  
   selector:
     matchLabels:
       app: {{ include "guacamole.portal.name" . }}
