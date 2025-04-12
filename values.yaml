@@ -48,7 +48,7 @@ portal:
     requests:
       memory: "1024Mi"
       cpu: "250m"
- autoscaling:
+  autoscaling:
     enabled: false
     minReplicas: 1
     maxReplicas: 5
