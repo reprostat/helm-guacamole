@@ -21,14 +21,14 @@ spec:
         {{- toYaml .Values.portal.tolerations | nindent 8 }}
         
       volumes:
-      {{ if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
+      {{- if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
         - name: ldap-tls
           secret:
             secretName: {{ .Values.database.tlsSecretname }}
-      {{ end }}
-      {{ if .Values.portal.volumes }}
+      {{- end }}
+      {{- if .Values.portal.volumes }}
       {{ toYaml .Values.portal.volumes | nindent 6 }}
-      {{ end }}
+      {{- end }}
       
       {{- if .Values.global.imagePullSecret }}
       imagePullSecrets:
@@ -44,7 +44,7 @@ spec:
         - name: JAVA_OPTS
           value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
 
-        {{ if eq .Values.database.type "postgres" }}
+        {{- if eq .Values.database.type "postgres" }}
         - name: POSTGRESQL_HOSTNAME
           value: {{ .Values.database.hostname }}
         - name: POSTGRESQL_PORT
@@ -60,9 +60,9 @@ spec:
               key: {{ .Values.database.password.key }}
         - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
           value: "true"
-        {{ end }}
+        {{- end }}
 
-        {{ if eq .Values.database.type "mysql" }}
+        {{- if eq .Values.database.type "mysql" }}
         - name: MYSQL_HOSTNAME
           value: {{ .Values.database.hostname }}
         - name: MYSQL_PORT
@@ -78,9 +78,9 @@ spec:
               key: {{ .Values.database.password.key }}
         - name: MYSQL_AUTO_CREATE_ACCOUNTS
           value: "true"
-        {{ end }}
+        {{- end }}
 
-        {{ if eq .Values.database.type "ldap" }}
+        {{- if eq .Values.database.type "ldap" }}
         - name: LDAP_HOSTNAME
           value: {{ .Values.database.hostname }}
         - name: LDAP_PORT
@@ -109,28 +109,28 @@ spec:
           value: {{ .Values.database.memberAttributeType }}
         - name: LDAP_CONFIG_BASE_DN
           value: {{ .Values.database.guacConfigBaseDN }}
-        {{ if or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls") }}
+        {{- if or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls") }}
         - name: EXTRA_CACERT_ENABLED
           value: "true"
         - name: EXTRA_CACERT_SEARCH_PATH
           value: "/opt/guacamole/certs"
-        {{ end }}          
-        {{ end }}
+        {{- end }}          
+        {{- end }}
 
-        {{ if .Values.portal.env }}
+        {{- if .Values.portal.env }}
         {{ toYaml .Values.portal.env | nindent 8 }}
-        {{ end }}
+        {{- end }}
         
         volumeMounts:
-        {{ if and (eq .Values.database.type "ldap") (or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls")) }}
+        {{- if and (eq .Values.database.type "ldap") (or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls")) }}
           - name: ldap-tls
             mountPath: /opt/guacamole/certs/ldap-ca.crt
             subPath: ca.crt
             readOnly: true
-        {{ end }}
-        {{ if .Values.portal.volumeMounts }}
+        {{- end }}
+        {{- if .Values.portal.volumeMounts }}
         {{ toYaml .Values.portal.volumeMounts | nindent 8 }}
-        {{ end }}
+        {{- end }}
           
         resources:
           {{- toYaml .Values.portal.resources | nindent 10 }}
@@ -140,7 +140,7 @@ spec:
           name: http
           protocol: TCP
 
-      {{ if .Values.hostAliases }}
+      {{- if .Values.hostAliases }}
       hostAliases:
       {{ toYaml .Values.hostAliases | nindent 8 }}
-      {{ end }}      
+      {{- end }}      
