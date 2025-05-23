@@ -81,19 +81,44 @@ portal:
       enabled: false
       secretName: guacamole-tls
 
-# connections
-database:
-  type: ldap
-  hostname: ldap.local
-  port: 389
-  encryptionMethod: starttls
-  tlsSecretname: guacamole-tls
-  bindSecret: guacamole-ldap
-  maxSearchResults: 1000
-  userBaseDN: ou=people,dc=example,dc=com
-  usernameAttribute: uid
-  memberAttribute: uniqueMember
-  memberAttributeType: dn
-  guacConfigBaseDN: ou=guacConfigs,ou=groups,dc=example,dc=com
+# At least one authentication method must be specified
+# Authentication_priority corresponds to extention-priority 
+# (see https://guacamole.apache.org/doc/gug/configuring-guacamole.html#initial-setup)
+authentication:
+  priority: []
+#    - ldap
+#    - oidc
+#    - database
+# database:
+#   type: postgres
+#   hostname: "database.local"
+#   port: "5432"
+#   database: "guacamole"
+#   user: "guac@database.local"
+#   password:
+#     secret: "guacamole"
+#     key: "db-password"
+#
+#  ldap:
+#    hostname: ldap.local
+#    port: 389
+#    encryptionMethod: starttls
+#    tlsSecretname: guacamole-tls
+#    bindSecret: guacamole-ldap
+#    maxSearchResults: 1000
+#    userBaseDN: ou=people,dc=example,dc=com
+#    usernameAttribute: uid
+#    memberAttribute: uniqueMember
+#    memberAttributeType: dn
+#    guacConfigBaseDN: ou=guacConfigs,ou=groups,dc=example,dc=com
+#
+#  oidc:
+#    authorizationEndpoint: https://keycloak.example.com/realms/myorg/protocol/openid-connect/auth
+#    jwksEndpoint: https://keycloak.example.com/realms/myorg/protocol/openid-connect/certs
+#    issuer: https://keycloak.example.com/realms/myorg
+#    redirectUri: https://guacamole.example.com
+#    
+#    usernameClaimType: preferred_username
+#    scope: "openid preferred_username profile"
 
 hostAliases: []

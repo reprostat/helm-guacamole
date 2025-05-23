@@ -21,10 +21,10 @@ spec:
         {{- toYaml .Values.portal.tolerations | nindent 8 }}
         
       volumes:
-      {{- if and (eq .Values.database.type "ldap") (eq .Values.database.encryptionMethod "starttls") }}
+      {{- if and (hasKey .Values.authentication "ldap") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
         - name: ldap-tls
           secret:
-            secretName: {{ .Values.database.tlsSecretname }}
+            secretName: {{ .Values.authentication.ldap.tlsSecretname }}
       {{- end }}
       {{- if .Values.portal.volumes }}
       {{ toYaml .Values.portal.volumes | nindent 6 }}
@@ -44,72 +44,77 @@ spec:
         - name: JAVA_OPTS
           value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
 
-        {{- if eq .Values.database.type "postgres" }}
+        {{- if .Values.authentication.priority }}
+        - name: EXTENSION_PRIORITY
+          value: {{ join "," .Values.authentication.priority }}
+        {{- end }}
+
+        {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
         - name: POSTGRESQL_HOSTNAME
-          value: {{ .Values.database.hostname }}
+          value: {{ .Values.authentication.database.hostname }}
         - name: POSTGRESQL_PORT
-          value: {{ .Values.database.port | quote }}
+          value: {{ .Values.authentication.database.port | quote }}
         - name: POSTGRESQL_DATABASE
-          value: {{ .Values.database.database }}
+          value: {{ .Values.authentication.database.database }}
         - name: POSTGRESQL_USER
-          value: {{ .Values.database.user }}
+          value: {{ .Values.authentication.database.user }}
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ include "guacamole.password.secret" . }}
-              key: {{ .Values.database.password.key }}
+              key: {{ .Values.authentication.database.password.key }}
         - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
           value: "true"
         {{- end }}
 
-        {{- if eq .Values.database.type "mysql" }}
+        {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "mysql") }}
         - name: MYSQL_HOSTNAME
-          value: {{ .Values.database.hostname }}
+          value: {{ .Values.authentication.database.hostname }}
         - name: MYSQL_PORT
-          value: {{ .Values.database.port }}
+          value: {{ .Values.authentication.database.port }}
         - name: MYSQL_DATABASE
-          value: {{ .Values.database.database }}
+          value: {{ .Values.authentication.database.database }}
         - name: MYSQL_USER
-          value: {{ .Values.database.user }}
+          value: {{ .Values.authentication.database.user }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ include "guacamole.password.secret" . }}
-              key: {{ .Values.database.password.key }}
+              key: {{ .Values.authentication.database.password.key }}
         - name: MYSQL_AUTO_CREATE_ACCOUNTS
           value: "true"
         {{- end }}
 
-        {{- if eq .Values.database.type "ldap" }}
+        {{- if and (hasKey .Values.authentication "ldap") }}
         - name: LDAP_HOSTNAME
-          value: {{ .Values.database.hostname }}
+          value: {{ .Values.authentication.ldap.hostname }}
         - name: LDAP_PORT
-          value: {{ .Values.database.port | quote }}
+          value: {{ .Values.authentication.ldap.port | quote }}
         - name: LDAP_ENCRYPTION_METHOD
-          value: {{ .Values.database.encryptionMethod }}
+          value: {{ .Values.authentication.ldap.encryptionMethod }}
         - name: LDAP_SEARCH_BIND_DN
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.database.bindSecret }}
+              name: {{ .Values.authentication.ldap.bindSecret }}
               key: LDAP_bindDN
         - name: LDAP_SEARCH_BIND_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.database.bindSecret }}
+              name: {{ .Values.authentication.ldap.bindSecret }}
               key: LDAP_bindPW
         - name: LDAP_MAX_SEARCH_RESULTS
-          value: {{ .Values.database.maxSearchResults | quote  }}
+          value: {{ .Values.authentication.ldap.maxSearchResults | quote  }}
         - name: LDAP_USER_BASE_DN
-          value: {{ .Values.database.userBaseDN }}
+          value: {{ .Values.authentication.ldap.userBaseDN }}
         - name: LDAP_USERNAME_ATTRIBUTE
-          value: {{ .Values.database.usernameAttribute }}
+          value: {{ .Values.authentication.ldap.usernameAttribute }}
         - name: LDAP_MEMBER_ATTRIBUTE
-          value: {{ .Values.database.memberAttribute }}
+          value: {{ .Values.authentication.ldap.memberAttribute }}
         - name: LDAP_MEMBER_ATTRIBUTE_TYPE
-          value: {{ .Values.database.memberAttributeType }}
+          value: {{ .Values.authentication.ldap.memberAttributeType }}
         - name: LDAP_CONFIG_BASE_DN
-          value: {{ .Values.database.guacConfigBaseDN }}
-        {{- if or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls") }}
+          value: {{ .Values.authentication.ldap.guacConfigBaseDN }}
+        {{- if or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
         - name: EXTRA_CACERT_ENABLED
           value: "true"
         - name: EXTRA_CACERT_SEARCH_PATH
@@ -117,12 +122,34 @@ spec:
         {{- end }}          
         {{- end }}
 
+        {{- if and (hasKey .Values.authentication "oidc") }}
+        - name: OPENID_AUTHORIZATION_ENDPOINT
+          value: {{ .Values.authentication.oidc.authorizationEndpoint }}
+        - name: OPENID_JWKS_ENDPOINT
+          value: {{ .Values.authentication.oidc.jwksEndpoint }}
+        - name: OPENID_ISSUER
+          value: {{ .Values.authentication.oidc.issuer }}
+        - name: OPENID_REDIRECT_URI
+          value: {{ .Values.authentication.oidc.redirectUri }}
+        - name: OPENID_USERNAME_CLAIM_TYPE
+          value: {{ .Values.authentication.oidc.usernameClaimType }}
+        - name: OPENID_SCOPE
+          value: {{ .Values.authentication.oidc.scope }}
+        {{- end }}
+
+        {{- if .Values.portal.extraEnv }}
+        {{ toYaml .Values.portal.extraEnv | nindent 8 }}
+        {{- end }}
+
+        {{- if .Values.portal.command }}
+        {{- end}}
+
         {{- if .Values.portal.env }}
         {{ toYaml .Values.portal.env | nindent 8 }}
         {{- end }}
         
         volumeMounts:
-        {{- if and (eq .Values.database.type "ldap") (or (eq .Values.database.encryptionMethod "ssl") (eq .Values.database.encryptionMethod "starttls")) }}
+        {{- if and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls")) }}
           - name: ldap-tls
             mountPath: /opt/guacamole/certs/ldap-ca.crt
             subPath: ca.crt
