@@ -129,6 +129,8 @@ spec:
           value: {{ .Values.authentication.oidc.jwksEndpoint }}
         - name: OPENID_ISSUER
           value: {{ .Values.authentication.oidc.issuer }}
+        - name: OPENID_CLIENT_ID
+          value: {{ .Values.authentication.oidc.clientId }}
         - name: OPENID_REDIRECT_URI
           value: {{ .Values.authentication.oidc.redirectUri }}
         - name: OPENID_USERNAME_CLAIM_TYPE

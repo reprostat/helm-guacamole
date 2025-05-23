@@ -116,8 +116,8 @@ authentication:
 #    authorizationEndpoint: https://keycloak.example.com/realms/myorg/protocol/openid-connect/auth
 #    jwksEndpoint: https://keycloak.example.com/realms/myorg/protocol/openid-connect/certs
 #    issuer: https://keycloak.example.com/realms/myorg
+#    clientId: guacamole
 #    redirectUri: https://guacamole.example.com
-#    
 #    usernameClaimType: preferred_username
 #    scope: "openid preferred_username profile"
 
