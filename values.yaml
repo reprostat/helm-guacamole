@@ -119,6 +119,7 @@ authentication:
 #    clientId: guacamole
 #    redirectUri: https://guacamole.example.com
 #    usernameClaimType: preferred_username
-#    scope: "openid preferred_username profile"
+#    groupsClaimType: groups
+#    scope: "openid profile"
 
 hostAliases: []

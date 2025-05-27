@@ -135,6 +135,8 @@ spec:
           value: {{ .Values.authentication.oidc.redirectUri }}
         - name: OPENID_USERNAME_CLAIM_TYPE
           value: {{ .Values.authentication.oidc.usernameClaimType }}
+        - name: OPENID_GROUPS_CLAIM_TYPE
+          value: {{ .Values.authentication.oidc.groupsClaimType }}
         - name: OPENID_SCOPE
           value: {{ .Values.authentication.oidc.scope }}
         {{- end }}
