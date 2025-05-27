@@ -5,16 +5,18 @@ set -eu
 curl -fsSL -o ../get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 chmod 700 ../get_helm.sh
 ../get_helm.sh
+echo "Using Helm version: $(helm version --short)"
 
 repo_uri="https://x-access-token:${DEPLOY_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-
 remote_name="origin"
 main_branch="master"
 target_branch="gh-pages"
 build_dir="dist"
-
 cd "$GITHUB_WORKSPACE"
 
+echo "Checking Helm chart dependencies..."
+helm dependency update
+echo "Building Helm chart..."
 helm package --destination ../ .
 
 git config user.name "$GITHUB_ACTOR"
