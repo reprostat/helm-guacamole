@@ -27,7 +27,9 @@ spec:
 
       {{- if .Values.global.imagePullSecret }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      {{- range .Values.global.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
       {{- end }}
       containers:
       - name: daemon

@@ -1,6 +1,6 @@
 global:
-  # Kubernetes secret for pulling images
-  imagePullSecret: ~
+  imagePullSecrets: []
+  defaultStorageClass: ""
 
 # guacd
 daemon:
@@ -81,6 +81,30 @@ portal:
       enabled: false
       secretName: guacamole-tls
 
+## PostgreSQL chart configuration
+## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+## @param postgresql.enabled Switch to enable or disable the PostgreSQL helm chart
+## @param postgresql.auth.postgresPassword Password for the "postgres" admin user. Ignored if `auth.existingSecret` with key `postgres-password` is provided
+## @param postgresql.auth.username Name for a custom user to create
+## @param postgresql.auth.password Password for the custom user to create
+## @param postgresql.auth.database Name for a custom database to create
+## @param postgresql.auth.existingSecret Name of existing secret to use for PostgreSQL credentials
+## @param postgresql.auth.secretKeys.userPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
+## @param postgresql.architecture PostgreSQL architecture (`standalone` or `replication`)
+##
+# postgresql:
+#   enabled: true
+#   auth:
+#     postgresPassword: ""
+#     username: guacamole
+#     password: ""
+#     database: guacamole
+#     existingSecret: guacamole-db
+#     secretKeys:
+#       adminPasswordKey: adminPassword
+#       userPasswordKey: userPassword
+#   architecture: standalone
+
 # At least one authentication method must be specified
 # Authentication_priority corresponds to extention-priority 
 # (see https://guacamole.apache.org/doc/gug/configuring-guacamole.html#initial-setup)
@@ -89,15 +113,17 @@ authentication:
 #    - ldap
 #    - oidc
 #    - database
+# For database authentication, <database.type>.enabled must be set to true, 
+# unless external database is used.
 # database:
 #   type: postgres
-#   hostname: "database.local"
+#   hostname: "guacamole-postgresql"
 #   port: "5432"
 #   database: "guacamole"
-#   user: "guac@database.local"
+#   user: "guacamole"
 #   password:
-#     secret: "guacamole"
-#     key: "db-password"
+#     secret: "guacamole-db"
+#     key: "userPassword"
 #
 #  ldap:
 #    hostname: ldap.local
