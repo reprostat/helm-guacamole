@@ -63,7 +63,7 @@ spec:
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ include "guacamole.password.secret" . }}
+              name: {{ .Values.postgresql.auth.existingSecret }}
               key: {{ .Values.authentication.database.password.key }}
         - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
           value: "true"
@@ -81,7 +81,7 @@ spec:
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ include "guacamole.password.secret" . }}
+              name: {{ .Values.mysql.auth.existingSecret }}
               key: {{ .Values.authentication.database.password.key }}
         - name: MYSQL_AUTO_CREATE_ACCOUNTS
           value: "true"
