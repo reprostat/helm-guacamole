@@ -103,7 +103,21 @@ portal:
 #     secretKeys:
 #       adminPasswordKey: adminPassword
 #       userPasswordKey: userPassword
-#   architecture: standalone
+#   backup:
+#     cronjob:
+#       storage:
+#         size: 500Mi
+#   enabled: true
+#   image:
+#     debug: true
+#   primary:
+#     initdb:
+#       scriptsConfigMap: guacamole-postgresql-initdb
+#     persistence:
+#       size: 500Mi
+#   readReplicas:
+#     persistence:
+#       size: 500Mi  
 
 # At least one authentication method must be specified
 # Authentication_priority corresponds to extention-priority 
