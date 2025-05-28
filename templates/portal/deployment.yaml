@@ -65,8 +65,8 @@ spec:
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.postgresql.auth.existingSecret | default .Values.authentication.database.password.secret }}
-              key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey | default .Values.authentication.database.password.key }}
+              name: {{ .Values.postgresql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
+              key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
         - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
           value: "true"
         {{- end }}
@@ -85,8 +85,8 @@ spec:
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.mysql.auth.existingSecret | default .Values.authentication.database.password.secret }}
-              key: {{ .Values.mysql.auth.secretKeys.userPasswordKey | default .Values.authentication.database.password.key }}
+              name: {{ .Values.mysql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
+              key: {{ .Values.mysql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
         - name: MYSQL_AUTO_CREATE_ACCOUNTS
           value: "true"
         {{- end }}
