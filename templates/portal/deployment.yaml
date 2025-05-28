@@ -58,8 +58,8 @@ spec:
           value: {{ .Values.authentication.database.port | quote }}
         - name: POSTGRESQL_DATABASE
           value: {{ .Values.authentication.database.database }}
-        - name: POSTGRESQL_USER
-          value: {{ .Values.authentication.database.user }}
+        - name: POSTGRESQL_USERNAME
+          value: {{ .Values.authentication.database.username }}
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -76,8 +76,8 @@ spec:
           value: {{ .Values.authentication.database.port }}
         - name: MYSQL_DATABASE
           value: {{ .Values.authentication.database.database }}
-        - name: MYSQL_USER
-          value: {{ .Values.authentication.database.user }}
+        - name: MYSQL_USERNAME
+          value: {{ .Values.authentication.database.username }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:

@@ -120,7 +120,7 @@ authentication:
 #   hostname: "guacamole-postgresql"
 #   port: "5432"
 #   database: "guacamole"
-#   user: "guacamole"
+#   username: "guacamole"
 #   password:
 #     secret: "guacamole-db"
 #     key: "userPassword"
