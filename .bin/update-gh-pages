@@ -18,6 +18,8 @@ echo "Checking Helm chart dependencies..."
 helm dependency update
 echo "Building Helm chart..."
 helm package --destination ../ .
+echo "Cleanup..."
+rm Chart.lock
 
 git config user.name "$GITHUB_ACTOR"
 git config user.email "${GITHUB_ACTOR}@bots.github.com"
