@@ -113,10 +113,11 @@ authentication:
 #    - ldap
 #    - oidc
 #    - database
-# For database authentication, <database.type>.enabled must be set to true, 
-# unless external database is used.
+# For database authentication, <database.type>.enabled must be set to true.
 # database:
 #   type: postgres
+# For internal database, connection parameters will be used from <database.type>.auth.
+# For external database, connection parameters must be set here.
 #   hostname: "guacamole-postgresql"
 #   port: "5432"
 #   database: "guacamole"

@@ -53,36 +53,40 @@ spec:
 
         {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
         - name: POSTGRESQL_HOSTNAME
-          value: {{ .Values.authentication.database.hostname }}
+          value: {{ (printf "%s-postgresql" .Release.Name) | default .Values.authentication.database.hostname }}
+        {{- if .Values.authentication.database.port }}
         - name: POSTGRESQL_PORT
           value: {{ .Values.authentication.database.port | quote }}
+        {{- end }}
         - name: POSTGRESQL_DATABASE
-          value: {{ .Values.authentication.database.database }}
+          value: {{ .Values.postgresql.auth.database | default .Values.authentication.database.database }}
         - name: POSTGRESQL_USERNAME
-          value: {{ .Values.authentication.database.username }}
+          value: {{ .Values.postgresql.auth.username | default .Values.authentication.database.username }}
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.postgresql.auth.existingSecret }}
-              key: {{ .Values.authentication.database.password.key }}
+              name: {{ .Values.postgresql.auth.existingSecret | default .Values.authentication.database.password.secret }}
+              key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey | default .Values.authentication.database.password.key }}
         - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
           value: "true"
         {{- end }}
 
         {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "mysql") }}
         - name: MYSQL_HOSTNAME
-          value: {{ .Values.authentication.database.hostname }}
+          value: {{ (printf "%s-mysql" .Release.Name) | default .Values.authentication.database.hostname }}
+        {{- if .Values.authentication.database.port }}
         - name: MYSQL_PORT
-          value: {{ .Values.authentication.database.port }}
+          value: {{ .Values.authentication.database.port | quote }}
+        {{- end }}
         - name: MYSQL_DATABASE
-          value: {{ .Values.authentication.database.database }}
+          value: {{ .Values.mysql.auth.database | default .Values.authentication.database.database }}
         - name: MYSQL_USERNAME
-          value: {{ .Values.authentication.database.username }}
+          value: {{ .Values.mysql.auth.username | default .Values.authentication.database.username }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.mysql.auth.existingSecret }}
-              key: {{ .Values.authentication.database.password.key }}
+              name: {{ .Values.mysql.auth.existingSecret | default .Values.authentication.database.password.secret }}
+              key: {{ .Values.mysql.auth.secretKeys.userPasswordKey | default .Values.authentication.database.password.key }}
         - name: MYSQL_AUTO_CREATE_ACCOUNTS
           value: "true"
         {{- end }}
