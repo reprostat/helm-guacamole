@@ -37,147 +37,155 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-      - name: portal
-        image: {{ .Values.portal.image.repository }}:{{ default .Chart.AppVersion .Values.portal.image.tag }}
-        imagePullPolicy: {{ .Values.portal.image.pullPolicy | quote }}
-        env:
-        - name: GUACD_HOSTNAME
-          value: daemon
-        - name: JAVA_OPTS
-          value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+        - name: portal
+          image: {{ .Values.portal.image.repository }}:{{ default .Chart.AppVersion .Values.portal.image.tag }}
+          imagePullPolicy: {{ .Values.portal.image.pullPolicy | quote }}
+          env:
+          - name: GUACD_HOSTNAME
+            value: daemon
+          - name: JAVA_OPTS
+            value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
 
-        {{- if .Values.authentication.priority }}
-        - name: EXTENSION_PRIORITY
-          value: {{ join "," .Values.authentication.priority }}
-        {{- end }}
+          {{- if .Values.authentication.priority }}
+          - name: EXTENSION_PRIORITY
+            value: {{ join "," .Values.authentication.priority }}
+          {{- end }}
 
-        {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
-        - name: POSTGRESQL_HOSTNAME
-          value: {{ (printf "%s-postgresql" .Release.Name) | default .Values.authentication.database.hostname }}
-        {{- if .Values.authentication.database.port }}
-        - name: POSTGRESQL_PORT
-          value: {{ .Values.authentication.database.port | quote }}
-        {{- end }}
-        - name: POSTGRESQL_DATABASE
-          value: {{ .Values.postgresql.auth.database | default .Values.authentication.database.database }}
-        - name: POSTGRESQL_USERNAME
-          value: {{ .Values.postgresql.auth.username | default .Values.authentication.database.username }}
-        - name: POSTGRESQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgresql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
-              key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
-        - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
-          value: "true"
-        {{- end }}
+          {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
+          - name: POSTGRESQL_HOSTNAME
+            value: {{ (printf "%s-postgresql" .Release.Name) | default .Values.authentication.database.hostname }}
+          {{- if .Values.authentication.database.port }}
+          - name: POSTGRESQL_PORT
+            value: {{ .Values.authentication.database.port | quote }}
+          {{- end }}
+          - name: POSTGRESQL_DATABASE
+            value: {{ .Values.postgresql.auth.database | default .Values.authentication.database.database }}
+          - name: POSTGRESQL_USERNAME
+            value: {{ .Values.postgresql.auth.username | default .Values.authentication.database.username }}
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.postgresql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
+                key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
+          - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
+            value: "true"
+          {{- end }}
 
-        {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "mysql") }}
-        - name: MYSQL_HOSTNAME
-          value: {{ (printf "%s-mysql" .Release.Name) | default .Values.authentication.database.hostname }}
-        {{- if .Values.authentication.database.port }}
-        - name: MYSQL_PORT
-          value: {{ .Values.authentication.database.port | quote }}
-        {{- end }}
-        - name: MYSQL_DATABASE
-          value: {{ .Values.mysql.auth.database | default .Values.authentication.database.database }}
-        - name: MYSQL_USERNAME
-          value: {{ .Values.mysql.auth.username | default .Values.authentication.database.username }}
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.mysql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
-              key: {{ .Values.mysql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
-        - name: MYSQL_AUTO_CREATE_ACCOUNTS
-          value: "true"
-        {{- end }}
+          {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "mysql") }}
+          - name: MYSQL_HOSTNAME
+            value: {{ (printf "%s-mysql" .Release.Name) | default .Values.authentication.database.hostname }}
+          {{- if .Values.authentication.database.port }}
+          - name: MYSQL_PORT
+            value: {{ .Values.authentication.database.port | quote }}
+          {{- end }}
+          - name: MYSQL_DATABASE
+            value: {{ .Values.mysql.auth.database | default .Values.authentication.database.database }}
+          - name: MYSQL_USERNAME
+            value: {{ .Values.mysql.auth.username | default .Values.authentication.database.username }}
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.mysql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
+                key: {{ .Values.mysql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
+          - name: MYSQL_AUTO_CREATE_ACCOUNTS
+            value: "true"
+          {{- end }}
 
-        {{- if and (hasKey .Values.authentication "ldap") }}
-        - name: LDAP_HOSTNAME
-          value: {{ .Values.authentication.ldap.hostname }}
-        - name: LDAP_PORT
-          value: {{ .Values.authentication.ldap.port | quote }}
-        - name: LDAP_ENCRYPTION_METHOD
-          value: {{ .Values.authentication.ldap.encryptionMethod }}
-        - name: LDAP_SEARCH_BIND_DN
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.authentication.ldap.bindSecret }}
-              key: LDAP_bindDN
-        - name: LDAP_SEARCH_BIND_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.authentication.ldap.bindSecret }}
-              key: LDAP_bindPW
-        - name: LDAP_MAX_SEARCH_RESULTS
-          value: {{ .Values.authentication.ldap.maxSearchResults | quote  }}
-        - name: LDAP_USER_BASE_DN
-          value: {{ .Values.authentication.ldap.userBaseDN }}
-        - name: LDAP_USERNAME_ATTRIBUTE
-          value: {{ .Values.authentication.ldap.usernameAttribute }}
-        - name: LDAP_MEMBER_ATTRIBUTE
-          value: {{ .Values.authentication.ldap.memberAttribute }}
-        - name: LDAP_MEMBER_ATTRIBUTE_TYPE
-          value: {{ .Values.authentication.ldap.memberAttributeType }}
-        - name: LDAP_CONFIG_BASE_DN
-          value: {{ .Values.authentication.ldap.guacConfigBaseDN }}
-        {{- if or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
-        - name: EXTRA_CACERT_ENABLED
-          value: "true"
-        - name: EXTRA_CACERT_SEARCH_PATH
-          value: "/opt/guacamole/certs"
-        {{- end }}          
-        {{- end }}
+          {{- if and (hasKey .Values.authentication "ldap") }}
+          - name: LDAP_HOSTNAME
+            value: {{ .Values.authentication.ldap.hostname }}
+          - name: LDAP_PORT
+            value: {{ .Values.authentication.ldap.port | quote }}
+          - name: LDAP_ENCRYPTION_METHOD
+            value: {{ .Values.authentication.ldap.encryptionMethod }}
+          - name: LDAP_SEARCH_BIND_DN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.authentication.ldap.bindSecret }}
+                key: LDAP_bindDN
+          - name: LDAP_SEARCH_BIND_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.authentication.ldap.bindSecret }}
+                key: LDAP_bindPW
+          - name: LDAP_MAX_SEARCH_RESULTS
+            value: {{ .Values.authentication.ldap.maxSearchResults | quote  }}
+          - name: LDAP_USER_BASE_DN
+            value: {{ .Values.authentication.ldap.userBaseDN }}
+          - name: LDAP_USERNAME_ATTRIBUTE
+            value: {{ .Values.authentication.ldap.usernameAttribute }}
+          - name: LDAP_MEMBER_ATTRIBUTE
+            value: {{ .Values.authentication.ldap.memberAttribute }}
+          - name: LDAP_MEMBER_ATTRIBUTE_TYPE
+            value: {{ .Values.authentication.ldap.memberAttributeType }}
+          - name: LDAP_CONFIG_BASE_DN
+            value: {{ .Values.authentication.ldap.guacConfigBaseDN }}
+          {{- if or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
+          - name: EXTRA_CACERT_ENABLED
+            value: "true"
+          - name: EXTRA_CACERT_SEARCH_PATH
+            value: "/opt/guacamole/certs"
+          {{- end }}          
+          {{- end }}
 
-        {{- if and (hasKey .Values.authentication "oidc") }}
-        - name: OPENID_AUTHORIZATION_ENDPOINT
-          value: {{ .Values.authentication.oidc.authorizationEndpoint }}
-        - name: OPENID_JWKS_ENDPOINT
-          value: {{ .Values.authentication.oidc.jwksEndpoint }}
-        - name: OPENID_ISSUER
-          value: {{ .Values.authentication.oidc.issuer }}
-        - name: OPENID_CLIENT_ID
-          value: {{ .Values.authentication.oidc.clientId }}
-        - name: OPENID_REDIRECT_URI
-          value: {{ .Values.authentication.oidc.redirectUri }}
-        - name: OPENID_USERNAME_CLAIM_TYPE
-          value: {{ .Values.authentication.oidc.usernameClaimType }}
-        - name: OPENID_GROUPS_CLAIM_TYPE
-          value: {{ .Values.authentication.oidc.groupsClaimType }}
-        - name: OPENID_SCOPE
-          value: {{ .Values.authentication.oidc.scope }}
-        {{- end }}
+          {{- if and (hasKey .Values.authentication "oidc") }}
+          - name: OPENID_AUTHORIZATION_ENDPOINT
+            value: {{ .Values.authentication.oidc.authorizationEndpoint }}
+          - name: OPENID_JWKS_ENDPOINT
+            value: {{ .Values.authentication.oidc.jwksEndpoint }}
+          - name: OPENID_ISSUER
+            value: {{ .Values.authentication.oidc.issuer }}
+          - name: OPENID_CLIENT_ID
+            value: {{ .Values.authentication.oidc.clientId }}
+          - name: OPENID_REDIRECT_URI
+            value: {{ .Values.authentication.oidc.redirectUri }}
+          - name: OPENID_USERNAME_CLAIM_TYPE
+            value: {{ .Values.authentication.oidc.usernameClaimType }}
+          - name: OPENID_GROUPS_CLAIM_TYPE
+            value: {{ .Values.authentication.oidc.groupsClaimType }}
+          - name: OPENID_SCOPE
+            value: {{ .Values.authentication.oidc.scope }}
+          {{- end }}
 
-        {{- if .Values.portal.extraEnv }}
-        {{ toYaml .Values.portal.extraEnv | nindent 8 }}
-        {{- end }}
+          {{- if .Values.portal.extraEnv }}
+          {{ toYaml .Values.portal.extraEnv | nindent 10 }}
+          {{- end }}
 
-        {{- if .Values.portal.command }}
-        {{- end}}
+          {{- if .Values.portal.command }}
+          {{- end}}
 
-        {{- if .Values.portal.env }}
-        {{ toYaml .Values.portal.env | nindent 8 }}
-        {{- end }}
-        
-        volumeMounts:
-        {{- if and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls")) }}
-          - name: ldap-tls
-            mountPath: /opt/guacamole/certs/ldap-ca.crt
-            subPath: ca.crt
-            readOnly: true
-        {{- end }}
-        {{- if .Values.portal.volumeMounts }}
-        {{ toYaml .Values.portal.volumeMounts | nindent 8 }}
-        {{- end }}
+          {{- if .Values.portal.env }}
+          {{ toYaml .Values.portal.env | nindent 10 }}
+          {{- end }}
           
-        resources:
-          {{- toYaml .Values.portal.resources | nindent 10 }}
+          volumeMounts:
+          {{- if and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls")) }}
+            - name: ldap-tls
+              mountPath: /opt/guacamole/certs/ldap-ca.crt
+              subPath: ca.crt
+              readOnly: true
+          {{- end }}
+          {{- if .Values.portal.extraVolumeMounts }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraVolumeMounts "context" $) | nindent 12 }}
+          {{- end }}
 
-        ports:
-        - containerPort: {{ .Values.portal.port }}
-          name: http
-          protocol: TCP
+          resources:
+          {{- toYaml .Values.portal.resources | nindent 12 }}
+
+          ports:
+          - containerPort: {{ .Values.portal.port }}
+            name: http
+            protocol: TCP
+      {{- if .Values.sidecars }}
+      {{- include "common.tplvalues.render" ( dict "value" .Values.sidecars "context" $) | nindent 8 }}
+      {{- end }}
 
       {{- if .Values.hostAliases }}
       hostAliases:
       {{ toYaml .Values.hostAliases | nindent 8 }}
-      {{- end }}      
+      {{- end }}
+
+      {{- if .Values.portal.extraVolumes }}
+      volumes:
+      {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraVolumes "context" $) | nindent 8 }}
+      {{- end }}

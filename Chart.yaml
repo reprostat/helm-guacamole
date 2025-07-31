@@ -1,13 +1,18 @@
 apiVersion: v2
 name: guacamole
 description: Helm chart for guacamole
-version: 0.7.0
+version: 0.7.1
 type: application
 
 appVersion: 1.6.0
 
 dependencies:
-- condition: postgresql.enabled
-  name: postgresql
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 16.x.x
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
+    version: ~2
+  - condition: postgresql.enabled
+    name: postgresql
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 16.x.x
