@@ -6,7 +6,7 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: Deployment
+    kind: StatefulSet
     name: {{ include "guacamole.portal.name" . }}
   minReplicas: {{ .Values.portal.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.portal.autoscaling.maxReplicas }}

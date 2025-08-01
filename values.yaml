@@ -2,6 +2,55 @@ global:
   imagePullSecrets: []
   defaultStorageClass: ""
 
+## Configure Pods Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+## @param podSecurityContext.enabled Enabled OPENLDAP  pods' Security Context
+## @param podSecurityContext.fsGroup Set OPENLDAP  pod's Security Context fsGroup
+##
+podSecurityContext:
+  enabled: true
+  fsGroup: 1001
+## Configure Container Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+## @param containerSecurityContext.enabled Enabled OPENLDAP  containers' Security Context
+## @param containerSecurityContext.runAsUser Set OPENLDAP  containers' Security Context runAsUser
+## @param containerSecurityContext.runAsNonRoot Set OPENLDAP  containers' Security Context runAsNonRoot
+##
+containerSecurityContext:
+  enabled: false
+  runAsUser: 1001
+  runAsNonRoot: true
+
+## Configure extra options for liveness, readiness, and startup probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 10
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 10
+startupProbe:
+  enabled: true
+  initialDelaySeconds: 0
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 30
+
+updateStrategy:
+  ## StrategyType
+  ## Can be set to RollingUpdate or OnDelete
+  ##
+  type: RollingUpdate
+
 ## guacd
 daemon:
   image: 
@@ -40,7 +89,7 @@ daemon:
 ## guacamole
 portal:
   image:
-    repository: reprostat/guacamole
+    repository: reprostat/guacamole-client
     tag: ""
     pullPolicy: Always
   replicas: 1
@@ -48,6 +97,22 @@ portal:
     requests:
       memory: "1024Mi"
       cpu: "250m"
+  ## Persist data to a persistent volume
+  persistence:
+    enabled: false
+    ## database data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "standard-singlewriter"
+    # existingClaim: portal-pvc
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+    storageClass: ""
   autoscaling:
     enabled: false
     minReplicas: 1

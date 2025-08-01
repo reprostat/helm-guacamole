@@ -1,0 +1,233 @@
+apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
+kind: StatefulSet
+metadata:
+  name: {{ template "guacamole.portal.fullname" . }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: {{ template "guacamole.portal.fullname" . }}
+    release: {{ .Release.Name }}
+spec:
+  {{- if not .Values.portal.autoscaling.enabled }}
+  replicas: {{ .Values.portal.replicas }}
+  {{- end }}  
+  selector:
+    matchLabels: {{ include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: {{ template "guacamole.portal.fullname" . }}
+  template:
+    metadata:
+      labels:  {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: {{ template "guacamole.portal.fullname" . }}
+        release: {{ .Release.Name }}    spec:
+      serviceAccountName: {{ include "guacamole.portal.fullname" . }}
+      nodeSelector:
+        {{- toYaml .Values.portal.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.portal.tolerations | nindent 8 }}
+        
+      volumes:
+      {{- if and (hasKey .Values.authentication "ldap") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
+        - name: ldap-tls
+          secret:
+            secretName: {{ .Values.authentication.ldap.tlsSecretname }}
+      {{- end }}
+      {{- if .Values.portal.volumes }}
+      {{ toYaml .Values.portal.volumes | nindent 6 }}
+      {{- end }}
+      
+      {{- if .Values.global.imagePullSecret }}
+      imagePullSecrets:
+      {{- range .Values.global.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 30       
+      containers:
+        - name: portal
+          image: {{ .Values.portal.image.repository }}:{{ default .Chart.AppVersion .Values.portal.image.tag }}
+          imagePullPolicy: {{ .Values.portal.image.pullPolicy | quote }}
+          {{- if .Values.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}          
+          env:
+            - name: GUACD_HOSTNAME
+              value: daemon
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+
+          {{- if .Values.authentication.priority }}
+            - name: EXTENSION_PRIORITY
+              value: {{ join "," .Values.authentication.priority }}
+          {{- end }}
+
+          {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
+            - name: POSTGRESQL_HOSTNAME
+              value: {{ (printf "%s-postgresql" .Release.Name) | default .Values.authentication.database.hostname }}
+          {{- if .Values.authentication.database.port }}
+            - name: POSTGRESQL_PORT
+              value: {{ .Values.authentication.database.port | quote }}
+          {{- end }}
+            - name: POSTGRESQL_DATABASE
+              value: {{ .Values.postgresql.auth.database | default .Values.authentication.database.database }}
+            - name: POSTGRESQL_USERNAME
+              value: {{ .Values.postgresql.auth.username | default .Values.authentication.database.username }}
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
+                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
+            - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
+              value: "true"
+          {{- end }}
+
+          {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "mysql") }}
+            - name: MYSQL_HOSTNAME
+              value: {{ (printf "%s-mysql" .Release.Name) | default .Values.authentication.database.hostname }}
+          {{- if .Values.authentication.database.port }}
+            - name: MYSQL_PORT
+              value: {{ .Values.authentication.database.port | quote }}
+          {{- end }}
+            - name: MYSQL_DATABASE
+              value: {{ .Values.mysql.auth.database | default .Values.authentication.database.database }}
+            - name: MYSQL_USERNAME
+              value: {{ .Values.mysql.auth.username | default .Values.authentication.database.username }}
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
+                  key: {{ .Values.mysql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
+            - name: MYSQL_AUTO_CREATE_ACCOUNTS
+              value: "true"
+          {{- end }}
+
+          {{- if and (hasKey .Values.authentication "ldap") }}
+            - name: LDAP_HOSTNAME
+              value: {{ .Values.authentication.ldap.hostname }}
+            - name: LDAP_PORT
+              value: {{ .Values.authentication.ldap.port | quote }}
+            - name: LDAP_ENCRYPTION_METHOD
+              value: {{ .Values.authentication.ldap.encryptionMethod }}
+            - name: LDAP_SEARCH_BIND_DN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.authentication.ldap.bindSecret }}
+                  key: LDAP_bindDN
+            - name: LDAP_SEARCH_BIND_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.authentication.ldap.bindSecret }}
+                  key: LDAP_bindPW
+            - name: LDAP_MAX_SEARCH_RESULTS
+              value: {{ .Values.authentication.ldap.maxSearchResults | quote  }}
+            - name: LDAP_USER_BASE_DN
+              value: {{ .Values.authentication.ldap.userBaseDN }}
+            - name: LDAP_USERNAME_ATTRIBUTE
+              value: {{ .Values.authentication.ldap.usernameAttribute }}
+            - name: LDAP_MEMBER_ATTRIBUTE
+              value: {{ .Values.authentication.ldap.memberAttribute }}
+            - name: LDAP_MEMBER_ATTRIBUTE_TYPE
+              value: {{ .Values.authentication.ldap.memberAttributeType }}
+            - name: LDAP_CONFIG_BASE_DN
+              value: {{ .Values.authentication.ldap.guacConfigBaseDN }}
+          {{- if or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
+            - name: EXTRA_CACERT_ENABLED
+              value: "true"
+            - name: EXTRA_CACERT_SEARCH_PATH
+              value: "/opt/guacamole/certs"
+          {{- end }}          
+          {{- end }}
+
+          {{- if and (hasKey .Values.authentication "oidc") }}
+            - name: OPENID_AUTHORIZATION_ENDPOINT
+              value: {{ .Values.authentication.oidc.authorizationEndpoint }}
+            - name: OPENID_JWKS_ENDPOINT
+              value: {{ .Values.authentication.oidc.jwksEndpoint }}
+            - name: OPENID_ISSUER
+              value: {{ .Values.authentication.oidc.issuer }}
+            - name: OPENID_CLIENT_ID
+              value: {{ .Values.authentication.oidc.clientId }}
+            - name: OPENID_REDIRECT_URI
+              value: {{ .Values.authentication.oidc.redirectUri }}
+            - name: OPENID_USERNAME_CLAIM_TYPE
+              value: {{ .Values.authentication.oidc.usernameClaimType }}
+            - name: OPENID_GROUPS_CLAIM_TYPE
+              value: {{ .Values.authentication.oidc.groupsClaimType }}
+            - name: OPENID_SCOPE
+              value: {{ .Values.authentication.oidc.scope }}
+          {{- end }}
+          {{- if .Values.portal.persistence.enabled }}
+            - name: APACHE_BASE
+              value: /apache
+          {{- end }}
+
+          {{- if or .Values.portal.persistence.enabled (and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls"))) .Values.portal.extraVolumeMounts }}
+          volumeMounts:
+          {{- if .Values.portal.persistence.enabled }}
+            - name: data
+              mountPath: /apache
+          {{- end }}
+          {{- if and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls")) }}
+            - name: ldap-tls
+              mountPath: /opt/guacamole/certs/ldap-ca.crt
+              subPath: ca.crt
+              readOnly: true
+          {{- end }}
+          {{- if .Values.portal.extraVolumeMounts }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraVolumeMounts "context" $) | nindent 12 }}
+          {{- end }}
+          {{- end }}
+
+          {{- if .Values.portal.extraInitContainers }}
+
+          resources:
+          {{- toYaml .Values.portal.resources | nindent 12 }}
+
+          ports:
+            - containerPort: {{ .Values.portal.port }}
+              name: http
+              protocol: TCP
+      {{- if .Values.portal.sidecars }}
+      {{- include "common.tplvalues.render" ( dict "value" .Values.portal.sidecars "context" $) | nindent 8 }}
+      {{- end }}
+
+      {{- if .Values.hostAliases }}
+      hostAliases:
+      {{ toYaml .Values.hostAliases | nindent 8 }}
+      {{- end }}
+
+      {{- if or (and .Values.portal.persistence.enabled .Values.portal.persistence.existingClaim) .Values.portal.extraVolumes }}
+      volumes:
+      {{- if and .Values.portal.persistence.enabled .Values.portal.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.portal.persistence.existingClaim }}
+      {{- end }}
+      {{- if .Values.portal.extraVolumes }}
+      {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraVolumes "context" $) | nindent 8 }}
+      {{- end }}
+      {{- end }}
+  {{- if and .Values.portal.persistence.enabled (not .Values.portal.persistence.existingClaim) }}      
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+        {{- range $key, $value := .Values.portal.persistence.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.portal.persistence.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.portal.persistence.size | quote }}
+      {{- if .Values.portal.persistence.storageClass }}
+      {{- if (eq "-" .Values.portal.persistence.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.portal.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
+  
