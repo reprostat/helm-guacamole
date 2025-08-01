@@ -2,7 +2,7 @@ global:
   imagePullSecrets: []
   defaultStorageClass: ""
 
-# guacd
+## guacd
 daemon:
   image: 
     repository: guacamole/guacd
@@ -20,24 +20,24 @@ daemon:
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 75
     behavior: {}
-      # scaleDown:
-      #  stabilizationWindowSeconds: 300
-      #  policies:
-      #   - type: Pods
-      #     value: 1
-      #     periodSeconds: 180
-      # scaleUp:
-      #   stabilizationWindowSeconds: 300
-      #   policies:
-      #   - type: Pods
-      #     value: 2
-      #     periodSeconds: 60
+      ## scaleDown:
+      ##  stabilizationWindowSeconds: 300
+      ##  policies:
+      ##   - type: Pods
+      ##     value: 1
+      ##     periodSeconds: 180
+      ## scaleUp:
+      ##   stabilizationWindowSeconds: 300
+      ##   policies:
+      ##   - type: Pods
+      ##     value: 2
+      ##     periodSeconds: 60
   port: 4822
   
   service:
     port: 4822
 
-# guacamole
+## guacamole
 portal:
   image:
     repository: reprostat/guacamole
@@ -55,18 +55,36 @@ portal:
     targetCPUUtilizationPercentage: 75
     targetMemoryUtilizationPercentage: 75
     behavior: {}
-      # scaleDown:
-      #  stabilizationWindowSeconds: 300
-      #  policies:
-      #   - type: Pods
-      #     value: 1
-      #     periodSeconds: 180
-      # scaleUp:
-      #   stabilizationWindowSeconds: 300
-      #   policies:
-      #   - type: Pods
-      #     value: 2
-      #     periodSeconds: 60
+      ## scaleDown:
+      ##  stabilizationWindowSeconds: 300
+      ##  policies:
+      ##   - type: Pods
+      ##     value: 1
+      ##     periodSeconds: 180
+      ## scaleUp:
+      ##   stabilizationWindowSeconds: 300
+      ##   policies:
+      ##   - type: Pods
+      ##     value: 2
+      ##     periodSeconds: 60
+  ## @param extraVolumes Optionally specify extra list of additional volumes for the portal pod(s)
+  ##
+  extraVolumes: []
+  ## @param extraVolumeMounts Optionally specify extra list of additional volumeMounts for the portal container(s)
+  ##
+  extraVolumeMounts: []
+  ## @param sidecars Add additional sidecar containers to the portal pod(s)
+  ## e.g:
+  ## sidecars:
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     imagePullPolicy: Always
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
+  ##
+  sidecars: {}
+  
   port: 8080
   
   service:
@@ -92,75 +110,76 @@ portal:
 ## @param postgresql.auth.secretKeys.userPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
 ## @param postgresql.architecture PostgreSQL architecture (`standalone` or `replication`)
 ##
-# postgresql:
-#   enabled: true
-#   auth:
-#     postgresPassword: ""
-#     username: guacamole
-#     password: ""
-#     database: guacamole
-#     existingSecret: guacamole-db
-#     secretKeys:
-#       adminPasswordKey: adminPassword
-#       userPasswordKey: userPassword
-#   backup:
-#     cronjob:
-#       storage:
-#         size: 500Mi
-#   enabled: true
-#   image:
-#     debug: true
-#   primary:
-#     initdb:
-#       scriptsConfigMap: guacamole-postgresql-initdb
-#     persistence:
-#       size: 500Mi
-#   readReplicas:
-#     persistence:
-#       size: 500Mi  
+## postgresql:
+##   enabled: true
+##   auth:
+##     postgresPassword: ""
+##     username: guacamole
+##     password: ""
+##     database: guacamole
+##     existingSecret: guacamole-db
+##     secretKeys:
+##       adminPasswordKey: adminPassword
+##       userPasswordKey: userPassword
+##   backup:
+##     cronjob:
+##       storage:
+##         size: 500Mi
+##   enabled: true
+##   image:
+##     debug: true
+##   primary:
+##     initdb:
+##       scriptsConfigMap: guacamole-postgresql-initdb
+##     persistence:
+##       size: 500Mi
+##   readReplicas:
+##     persistence:
+##       size: 500Mi  
 
-# At least one authentication method must be specified
-# Authentication_priority corresponds to extention-priority 
-# (see https://guacamole.apache.org/doc/gug/configuring-guacamole.html#initial-setup)
+## At least one authentication method must be specified
+## Authentication_priority corresponds to extention-priority 
+## (see https://guacamole.apache.org/doc/gug/configuring-guacamole.html#initial-setup)
+##
 authentication:
   priority: []
-#    - ldap
-#    - oidc
-#    - database
-# For database authentication, <database.type>.enabled must be set to true.
-# database:
-#   type: postgres
-# For internal database, connection parameters will be used from <database.type>.auth.
-# For external database, connection parameters must be set here.
-#   hostname: "guacamole-postgresql"
-#   port: "5432"
-#   database: "guacamole"
-#   username: "guacamole"
-#   password:
-#     secret: "guacamole-db"
-#     key: "userPassword"
-#
-#  ldap:
-#    hostname: ldap.local
-#    port: 389
-#    encryptionMethod: starttls
-#    tlsSecretname: guacamole-tls
-#    bindSecret: guacamole-ldap
-#    maxSearchResults: 1000
-#    userBaseDN: ou=people,dc=example,dc=com
-#    usernameAttribute: uid
-#    memberAttribute: uniqueMember
-#    memberAttributeType: dn
-#    guacConfigBaseDN: ou=guacConfigs,ou=groups,dc=example,dc=com
-#
-#  oidc:
-#    authorizationEndpoint: https://keycloak.example.com/realms/myorg/protocol/openid-connect/auth
-#    jwksEndpoint: https://keycloak.example.com/realms/myorg/protocol/openid-connect/certs
-#    issuer: https://keycloak.example.com/realms/myorg
-#    clientId: guacamole
-#    redirectUri: https://guacamole.example.com
-#    usernameClaimType: preferred_username
-#    groupsClaimType: groups
-#    scope: "openid profile"
+##    - ldap
+##    - oidc
+##    - database
+## For database authentication, <database.type>.enabled must be set to true.
+## database:
+##   type: postgres
+## For internal database, connection parameters will be used from <database.type>.auth.
+## For external database, connection parameters must be set here.
+##   hostname: "guacamole-postgresql"
+##   port: "5432"
+##   database: "guacamole"
+##   username: "guacamole"
+##   password:
+##     secret: "guacamole-db"
+##     key: "userPassword"
+##
+##  ldap:
+##    hostname: ldap.local
+##    port: 389
+##    encryptionMethod: starttls
+##    tlsSecretname: guacamole-tls
+##    bindSecret: guacamole-ldap
+##    maxSearchResults: 1000
+##    userBaseDN: ou=people,dc=example,dc=com
+##    usernameAttribute: uid
+##    memberAttribute: uniqueMember
+##    memberAttributeType: dn
+##    guacConfigBaseDN: ou=guacConfigs,ou=groups,dc=example,dc=com
+##
+##  oidc:
+##    authorizationEndpoint: https://keycloak.example.com/realms/myorg/protocol/openid-connect/auth
+##    jwksEndpoint: https://keycloak.example.com/realms/myorg/protocol/openid-connect/certs
+##    issuer: https://keycloak.example.com/realms/myorg
+##    clientId: guacamole
+##    redirectUri: https://guacamole.example.com
+##    usernameClaimType: preferred_username
+##    groupsClaimType: groups
+##    scope: "openid profile"
 
 hostAliases: []

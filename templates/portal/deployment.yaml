@@ -152,12 +152,13 @@ spec:
           {{- end }}
 
           {{- if .Values.portal.command }}
-          {{- end}}
+          {{- end }}
 
           {{- if .Values.portal.env }}
           {{ toYaml .Values.portal.env | nindent 10 }}
           {{- end }}
           
+          {{- if or (and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls"))) .Values.portal.extraVolumeMounts }}
           volumeMounts:
           {{- if and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls")) }}
             - name: ldap-tls
@@ -168,6 +169,9 @@ spec:
           {{- if .Values.portal.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
+          {{- end }}
+
+          {{- if .Values.portal.extraInitContainers }}
 
           resources:
           {{- toYaml .Values.portal.resources | nindent 12 }}
@@ -176,8 +180,8 @@ spec:
           - containerPort: {{ .Values.portal.port }}
             name: http
             protocol: TCP
-      {{- if .Values.sidecars }}
-      {{- include "common.tplvalues.render" ( dict "value" .Values.sidecars "context" $) | nindent 8 }}
+      {{- if .Values.portal.sidecars }}
+      {{- include "common.tplvalues.render" ( dict "value" .Values.portal.sidecars "context" $) | nindent 8 }}
       {{- end }}
 
       {{- if .Values.hostAliases }}
