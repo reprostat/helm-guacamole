@@ -6,7 +6,7 @@ entries:
       licenses: Apache-2.0
     apiVersion: v2
     appVersion: 2.31.3
-    created: "2025-08-01T16:17:26.127043246Z"
+    created: "2025-08-01T16:30:04.591095918Z"
     description: A Library Helm Chart for grouping common logic between bitnami charts.
       This chart is not deployable by itself.
     digest: 7860e7fb0a543d28d2098bc1115a4bcda1dcd833e32e09712fde6c1c8e7ef4b7
@@ -31,7 +31,27 @@ entries:
   guacamole:
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2025-08-01T16:17:26.126329327Z"
+    created: "2025-08-01T16:30:04.589809285Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: ~2
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 16.x.x
+    description: Helm chart for guacamole
+    digest: d48cf0c93dd3d3399724d07e5ec95d0321b0aa71a96248f271b90fbeb4a117da
+    name: guacamole
+    type: application
+    urls:
+    - guacamole-0.9.1.tgz
+    version: 0.9.1
+  - apiVersion: v2
+    appVersion: 1.6.0
+    created: "2025-08-01T16:30:04.580461056Z"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -51,7 +71,7 @@ entries:
     version: 0.9.0
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2025-08-01T16:17:26.119011767Z"
+    created: "2025-08-01T16:30:04.571987933Z"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -71,7 +91,7 @@ entries:
     version: 0.8.1
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2025-08-01T16:17:26.109555093Z"
+    created: "2025-08-01T16:30:04.56574467Z"
     dependencies:
     - name: common
       repository: https://charts.bitnami.com/bitnami
@@ -91,7 +111,7 @@ entries:
     version: 0.7.1
   - apiVersion: v2
     appVersion: 1.6.0
-    created: "2025-08-01T16:17:26.100227212Z"
+    created: "2025-08-01T16:30:04.558592281Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -106,7 +126,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.095422712Z"
+    created: "2025-08-01T16:30:04.551799838Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -121,7 +141,7 @@ entries:
     version: 0.6.5
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.088687366Z"
+    created: "2025-08-01T16:30:04.547195468Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -136,7 +156,7 @@ entries:
     version: 0.6.4
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.080686571Z"
+    created: "2025-08-01T16:30:04.54204012Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -151,7 +171,7 @@ entries:
     version: 0.6.3
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.075125914Z"
+    created: "2025-08-01T16:30:04.536616087Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -166,7 +186,7 @@ entries:
     version: 0.6.2
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.070508094Z"
+    created: "2025-08-01T16:30:04.532084113Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -181,7 +201,7 @@ entries:
     version: 0.6.1
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.064823744Z"
+    created: "2025-08-01T16:30:04.526633573Z"
     dependencies:
     - condition: postgresql.enabled
       name: postgresql
@@ -196,7 +216,7 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.058934318Z"
+    created: "2025-08-01T16:30:04.521419216Z"
     description: Helm chart for guacamole
     digest: d763da115e4b8d40cb7621a617f37317d4c69a3328878f9be1598401b532f0ab
     name: guacamole
@@ -206,7 +226,7 @@ entries:
     version: 0.5.2
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.058458586Z"
+    created: "2025-08-01T16:30:04.521038235Z"
     description: Helm chart for guacamole
     digest: 8eb9b324e96b2814d734c9cb28e1e7f48636964e6666521924c149f58c46ffef
     name: guacamole
@@ -216,7 +236,7 @@ entries:
     version: 0.5.1
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.057919515Z"
+    created: "2025-08-01T16:30:04.520498557Z"
     description: Helm chart for guacamole
     digest: e4616709b25e54183efc57e6e5fbb5df74dfefcf5bc47e8a837b7a132c7be5a2
     name: guacamole
@@ -226,7 +246,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.057449073Z"
+    created: "2025-08-01T16:30:04.51997005Z"
     description: Helm chart for guacamole
     digest: 0ff35211c546d6ae03d79debc3d3cc383c5f52c1132f1a8f939ee764782cb90f
     name: guacamole
@@ -236,7 +256,7 @@ entries:
     version: 0.4.3
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.056987136Z"
+    created: "2025-08-01T16:30:04.519342308Z"
     description: Helm chart for guacamole
     digest: 4235c25c74bb00cad54ebfcde76fcfa393d279eca0c38a6eb2165bd6a9bc39cf
     name: guacamole
@@ -246,7 +266,7 @@ entries:
     version: 0.4.2
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.056606012Z"
+    created: "2025-08-01T16:30:04.518697854Z"
     description: Helm chart for guacamole
     digest: f7a90b2a2153c3096bb4c84cd40b8e133479d447fbdef0f44806f7876cc16dff
     name: guacamole
@@ -256,7 +276,7 @@ entries:
     version: 0.4.1
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.056220669Z"
+    created: "2025-08-01T16:30:04.518087364Z"
     description: Helm chart for guacamole
     digest: 9198b882d329ebef7a01ad3f0da3b19ed74ff8de49f67309dd6085f1e65ba274
     name: guacamole
@@ -266,7 +286,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.055861726Z"
+    created: "2025-08-01T16:30:04.517481993Z"
     description: Helm chart for guacamole
     digest: 301e5576ab35547c4646ecd7ad36ddbc6dda800bc3effa5858aec08be4be02ee
     name: guacamole
@@ -276,7 +296,7 @@ entries:
     version: 0.3.1
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.055546906Z"
+    created: "2025-08-01T16:30:04.516986237Z"
     description: Helm chart for guacamole
     digest: 47e0f8f041e92e97de8d08ca1444bff05690a500dad36d5199572dd148068240
     name: guacamole
@@ -286,7 +306,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.05214382Z"
+    created: "2025-08-01T16:30:04.512535221Z"
     description: Helm chart for guacamole
     digest: 59579a4c7d7b5b6d22edefde99d607f607ec0e5e5cd77aa9c9ea8a8f7b42c91c
     name: guacamole
@@ -296,7 +316,7 @@ entries:
     version: 0.2.10
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.055245661Z"
+    created: "2025-08-01T16:30:04.516496783Z"
     description: Helm chart for guacamole
     digest: cf814c2013bfd830f737704553ff3a77548a06c1a1c26fe45fafca61d8a3a387
     name: guacamole
@@ -306,7 +326,7 @@ entries:
     version: 0.2.9
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.054950667Z"
+    created: "2025-08-01T16:30:04.516003291Z"
     description: Helm chart for guacamole
     digest: 9a27448d2e65bb10f139ce223be10c8279912647bc9bc2a7902aa55eba14ba81
     name: guacamole
@@ -316,7 +336,7 @@ entries:
     version: 0.2.8
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.054630356Z"
+    created: "2025-08-01T16:30:04.515499891Z"
     description: Helm chart for guacamole
     digest: ae82663d6f5c0257384ef1d64d6c66590390ed83818a7660ab29becfa07230cc
     name: guacamole
@@ -326,7 +346,7 @@ entries:
     version: 0.2.7
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.054065273Z"
+    created: "2025-08-01T16:30:04.514615299Z"
     description: Helm chart for guacamole
     digest: 90827ee964cdb2e49e2b93bca2c36138ec4c4449af60df21203f4958e693b099
     name: guacamole
@@ -336,7 +356,7 @@ entries:
     version: 0.2.6
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.053395467Z"
+    created: "2025-08-01T16:30:04.513728951Z"
     description: Helm chart for guacamole
     digest: 8b4d6cc020399be7592027aad18a5e68a7940403bda8241196b6bb4ddf0a9bfa
     name: guacamole
@@ -346,7 +366,7 @@ entries:
     version: 0.2.5
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.053118678Z"
+    created: "2025-08-01T16:30:04.513416257Z"
     description: Helm chart for guacamole
     digest: 5088d9d097f95000e947bbc1b43dd5ebe16cf087619a60609764f8f6fd5bb104
     name: guacamole
@@ -356,7 +376,7 @@ entries:
     version: 0.2.4
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.05278945Z"
+    created: "2025-08-01T16:30:04.513139951Z"
     description: Helm chart for guacamole
     digest: 3a7e398d647080c5aa73f528e33f78430844051b1571a518fd8fe64dd0af183b
     name: guacamole
@@ -366,7 +386,7 @@ entries:
     version: 0.2.3
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.052469581Z"
+    created: "2025-08-01T16:30:04.512851061Z"
     description: Helm chart for guacamole
     digest: 27b351105fe938e5214e382756e01a5141e6f9b941757c320d7000dd795cc79a
     name: guacamole
@@ -376,7 +396,7 @@ entries:
     version: 0.2.2
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.051753888Z"
+    created: "2025-08-01T16:30:04.512188524Z"
     description: Helm chart for guacamole
     digest: a980f41e6447df3238c3de1f033082cf98644d16d2e84dce0afb71e9f7e9a1a0
     name: guacamole
@@ -386,7 +406,7 @@ entries:
     version: 0.2.1
   - apiVersion: v2
     appVersion: 1.5.5
-    created: "2025-08-01T16:17:26.051222732Z"
+    created: "2025-08-01T16:30:04.511875649Z"
     description: Helm chart for guacamole
     digest: 28b5ad63f0a39336eb09c5849e567b2b6200f33b21b42055b20b6a548897bc56
     name: guacamole
@@ -408,7 +428,7 @@ entries:
       tanzuCategory: service
     apiVersion: v2
     appVersion: 17.5.0
-    created: "2025-08-01T16:17:26.134547602Z"
+    created: "2025-08-01T16:30:04.59628527Z"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -450,7 +470,7 @@ entries:
       tanzuCategory: service
     apiVersion: v2
     appVersion: 17.5.0
-    created: "2025-08-01T16:17:26.146710168Z"
+    created: "2025-08-01T16:30:04.607013199Z"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -492,7 +512,7 @@ entries:
       tanzuCategory: service
     apiVersion: v2
     appVersion: 17.5.0
-    created: "2025-08-01T16:17:26.142453305Z"
+    created: "2025-08-01T16:30:04.602822843Z"
     dependencies:
     - name: common
       repository: oci://registry-1.docker.io/bitnamicharts
@@ -521,4 +541,4 @@ entries:
     urls:
     - charts/postgresql-16.7.4.tgz
     version: 16.7.4
-generated: "2025-08-01T16:17:26.050609052Z"
+generated: "2025-08-01T16:30:04.511445677Z"
