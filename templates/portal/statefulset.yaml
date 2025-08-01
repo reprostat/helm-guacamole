@@ -161,6 +161,45 @@ spec:
               value: /apache
           {{- end }}
 
+          resources:
+          {{- toYaml .Values.portal.resources | nindent 12 }}
+
+          ports:
+            - containerPort: {{ .Values.portal.port }}
+              name: http
+              protocol: TCP
+
+          {{- if .Values.livenessProbe.enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: rsyslog-port
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
+          readinessProbe:
+            tcpSocket:
+              port: rsyslog-port
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.startupProbe.enabled }}
+          startupProbe:
+            tcpSocket:
+              port: rsyslog-port
+            initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.startupProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.startupProbe.failureThreshold }}
+          {{- end }}
+
           {{- if or .Values.portal.persistence.enabled (and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls"))) .Values.portal.extraVolumeMounts }}
           volumeMounts:
           {{- if .Values.portal.persistence.enabled }}
@@ -178,15 +217,6 @@ spec:
           {{- end }}
           {{- end }}
 
-          {{- if .Values.portal.extraInitContainers }}
-
-          resources:
-          {{- toYaml .Values.portal.resources | nindent 12 }}
-
-          ports:
-            - containerPort: {{ .Values.portal.port }}
-              name: http
-              protocol: TCP
       {{- if .Values.portal.sidecars }}
       {{- include "common.tplvalues.render" ( dict "value" .Values.portal.sidecars "context" $) | nindent 8 }}
       {{- end }}
