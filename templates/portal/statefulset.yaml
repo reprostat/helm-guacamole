@@ -16,7 +16,8 @@ spec:
     metadata:
       labels:  {{- include "common.labels.standard" . | nindent 8 }}
         app.kubernetes.io/component: {{ template "guacamole.portal.fullname" . }}
-        release: {{ .Release.Name }}    spec:
+        release: {{ .Release.Name }}
+    spec:
       serviceAccountName: {{ include "guacamole.portal.fullname" . }}
       nodeSelector:
         {{- toYaml .Values.portal.nodeSelector | nindent 8 }}
