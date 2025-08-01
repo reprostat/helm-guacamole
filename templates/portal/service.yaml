@@ -3,13 +3,13 @@ kind: Service
 metadata:
   annotations:
   labels:
-    app: {{ include "guacamole.portal.name" . }}
+    app: {{ include "guacamole.portal.fullname" . }}
   name: portal
 spec:
   type: ClusterIP
   sessionAffinity: None
   selector:
-    app: {{ include "guacamole.portal.name" . }}
+    app: {{ include "guacamole.portal.fullname" . }}
   ports:
   - name: http
     port: {{ .Values.portal.service.port }}
