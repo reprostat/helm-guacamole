@@ -2,6 +2,8 @@ global:
   imagePullSecrets: []
   defaultStorageClass: ""
 
+nameOverride: ""
+
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 ## @param podSecurityContext.enabled Enabled OPENLDAP  pods' Security Context

@@ -1,5 +1,5 @@
 {{- define "guacamole.daemon.fullname" -}}
-{{- $name := default (printf "%s-daemon" .Release.Name) .Values.nameOverride -}}
+{{- $name := default .Release.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- printf "%s-daemon" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -8,7 +8,7 @@
 {{- end }}
 
 {{- define "guacamole.portal.fullname" -}}
-{{- $name := default (printf "%s-portal" .Release.Name) .Values.nameOverride -}}
+{{- $name := default .Release.Name .Values.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- printf "%s-portal" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}

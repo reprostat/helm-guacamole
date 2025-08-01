@@ -1,15 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ printf "%s-deamon" .Release.Name }}
   annotations:
   labels:
-    app: {{ include "guacamole.daemon.fullname" . }}
-  name: daemon
+    app.kubernetes.io/component: {{ include "guacamole.daemon.fullname" . }}
+    release: {{ .Release.Name }}
 spec:
   type: ClusterIP
   sessionAffinity: None
   selector:
-    app: {{ include "guacamole.daemon.fullname" . }}
+    app.kubernetes.io/component: {{ include "guacamole.daemon.fullname" . }}
   ports:
   - name: daemon
     port: {{ .Values.daemon.service.port }}
