@@ -260,4 +260,5 @@ spec:
         storageClassName: "{{ .Values.portal.persistence.storageClass }}"
       {{- end }}
       {{- end }}
+  {{- end }}
   
