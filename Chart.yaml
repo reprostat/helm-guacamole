@@ -1,7 +1,7 @@
 apiVersion: v2
 name: guacamole
 description: Helm chart for guacamole
-version: 0.9.8
+version: 0.9.9
 type: application
 
 appVersion: 1.6.0

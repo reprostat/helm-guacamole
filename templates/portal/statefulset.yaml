@@ -25,13 +25,18 @@ spec:
         {{- toYaml .Values.portal.tolerations | nindent 8 }}
         
       volumes:
+      {{- if and .Values.portal.persistence.enabled .Values.portal.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.portal.persistence.existingClaim }}
+      {{- end }}
       {{- if and (hasKey .Values.authentication "ldap") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
         - name: ldap-tls
           secret:
             secretName: {{ .Values.authentication.ldap.tlsSecretname }}
       {{- end }}
-      {{- if .Values.portal.volumes }}
-      {{ toYaml .Values.portal.volumes | nindent 6 }}
+      {{- if .Values.portal.extraVolumes }}
+      {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraVolumes "context" $) | nindent 8 }}
       {{- end }}
       
       {{- if .Values.global.imagePullSecret }}
@@ -224,20 +229,9 @@ spec:
 
       {{- if .Values.hostAliases }}
       hostAliases:
-      {{ toYaml .Values.hostAliases | nindent 8 }}
+      {{- toYaml .Values.hostAliases | nindent 8 }}
       {{- end }}
 
-      {{- if or (and .Values.portal.persistence.enabled .Values.portal.persistence.existingClaim) .Values.portal.extraVolumes }}
-      volumes:
-      {{- if and .Values.portal.persistence.enabled .Values.portal.persistence.existingClaim }}
-        - name: data
-          persistentVolumeClaim:
-            claimName: {{ .Values.portal.persistence.existingClaim }}
-      {{- end }}
-      {{- if .Values.portal.extraVolumes }}
-      {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraVolumes "context" $) | nindent 8 }}
-      {{- end }}
-      {{- end }}
   {{- if and .Values.portal.persistence.enabled (not .Values.portal.persistence.existingClaim) }}      
   volumeClaimTemplates:
     - metadata:
