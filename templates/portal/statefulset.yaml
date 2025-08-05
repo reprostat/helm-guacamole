@@ -158,8 +158,8 @@ spec:
               value: {{ .Values.authentication.oidc.scope }}
           {{- end }}
           {{- if .Values.portal.persistence.enabled }}
-            - name: APACHE_BASE
-              value: /apache
+            - name: WEBAPPS_BASE
+              value: /webapps
           {{- end }}
 
           resources:
@@ -205,7 +205,7 @@ spec:
           volumeMounts:
           {{- if .Values.portal.persistence.enabled }}
             - name: data
-              mountPath: /apache
+              mountPath: /webapps
           {{- end }}
           {{- if and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls")) }}
             - name: ldap-tls
