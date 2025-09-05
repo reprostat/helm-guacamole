@@ -75,14 +75,14 @@ spec:
               value: {{ .Values.authentication.database.port | quote }}
           {{- end }}
             - name: POSTGRESQL_DATABASE
-              value: {{ .Values.postgresql.auth.database | default .Values.authentication.database.database }}
+              value: {{ .Values.postgresql.cluster.initdb.database | default .Values.authentication.database.database }}
             - name: POSTGRESQL_USERNAME
-              value: {{ .Values.postgresql.auth.username | default .Values.authentication.database.username }}
+              value: {{ .Values.postgresql.cluster.initdb.owner | default .Values.authentication.database.username }}
             - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgresql.auth.existingSecret | default ((.Values.authentication.database.password).secret) }}
-                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey | default ((.Values.authentication.database.password).key) }}
+                  name: {{ .Values.postgresql.cluster.initdb.secret.name | default ((.Values.authentication.database.password).secret) }}
+                  key: {{ (((.Values.authentication.database).password).key) | default "password" }}
             - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
               value: "true"
           {{- end }}
