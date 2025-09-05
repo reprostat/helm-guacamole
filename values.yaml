@@ -150,7 +150,7 @@ portal:
   ##       - name: portname
   ##         containerPort: 1234
   ##
-  sidecars: {}
+  sidecars: []
   
   port: 8080
   
@@ -172,6 +172,7 @@ portal:
 ## @param postgresql.cluster.initdb.owner Name for a custom user to create
 ## @param postgresql.cluster.initdb.database Name for a custom database to create
 ## @param postgresql.cluster.initdb.secret.name points to a basic-auth secret with 'username' matching @param postgresql.cluster.initdb.owner
+## @param postgresql.cluster.initdb.postInitApplicationSQLRefs.configMapRefs MUST have at least one entry corresponding to the bundled SQL script to initialize the guacamole database schema
 ##
 ## postgresql:
 ##   enabled: true
@@ -197,6 +198,10 @@ portal:
 ##       owner: guacamole_user
 ##       secret:
 ##         name: postgresql-secret
+##       postInitApplicationSQLRefs:
+##         configMapRefs:
+##           - name: guacamole-initdb
+##             key: initdb.sql
 ##     postgresql:
 ##       parameters:
 ##         max_connections: 200
@@ -215,7 +220,7 @@ authentication:
 ## For database authentication, <database.type>.enabled must be set to true.
 ## database:
 ##   type: postgres
-## For internal database, connection parameters will be used from <database.type>.auth.
+## For internal database, connection parameters will be used from <database.type>.
 ## For external database, connection parameters must be set here.
 ##   hostname: "guacamole-postgresql"
 ##   port: "5432"
