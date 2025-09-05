@@ -167,43 +167,42 @@ portal:
       secretName: guacamole-tls
 
 ## PostgreSQL chart configuration
-## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+## ref: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/values.yaml
 ## @param postgresql.enabled Switch to enable or disable the PostgreSQL helm chart
-## @param postgresql.auth.postgresPassword Password for the "postgres" admin user. Ignored if `auth.existingSecret` with key `postgres-password` is provided
-## @param postgresql.auth.username Name for a custom user to create
-## @param postgresql.auth.password Password for the custom user to create
-## @param postgresql.auth.database Name for a custom database to create
-## @param postgresql.auth.existingSecret Name of existing secret to use for PostgreSQL credentials
-## @param postgresql.auth.secretKeys.userPasswordKey Name of key in existing secret to use for PostgreSQL credentials. Only used when `auth.existingSecret` is set.
-## @param postgresql.architecture PostgreSQL architecture (`standalone` or `replication`)
+## @param postgresql.cluster.initdb.owner Name for a custom user to create
+## @param postgresql.cluster.initdb.database Name for a custom database to create
+## @param postgresql.cluster.initdb.secret.name points to a basic-auth secret with 'username' matching @param postgresql.cluster.initdb.owner
 ##
 ## postgresql:
 ##   enabled: true
-##   auth:
-##     postgresPassword: ""
-##     username: guacamole
-##     password: ""
-##     database: guacamole
-##     existingSecret: guacamole-db
-##     secretKeys:
-##       adminPasswordKey: adminPassword
-##       userPasswordKey: userPassword
-##   backup:
-##     cronjob:
-##       storage:
-##         size: 500Mi
-##   enabled: true
-##   image:
-##     debug: true
-##   primary:
+##   version:
+##     postgresql: "17"
+##   backups:
+##     enabled: false
+##   cluster:
+##     imageName: ghcr.io/cloudnative-pg/postgresql:17.6-standard-bookworm
+##     instances: 1
+##     resources:
+##       requests:
+##         cpu: 500m
+##         memory: 512Mi      
+##       limits:
+##         cpu: 750m
+##         memory: 768Mi
+##     storage:
+##       storageClass: longhorn-encrypted
+##       size: 1Gi
 ##     initdb:
-##       scriptsConfigMap: guacamole-postgresql-initdb
-##     persistence:
-##       size: 500Mi
-##   readReplicas:
-##     persistence:
-##       size: 500Mi  
-
+##       database: guacamole
+##       owner: guacamole_user
+##       secret:
+##         name: postgresql-secret
+##     postgresql:
+##       parameters:
+##         max_connections: 200
+##     monitoring:
+##       enabled: true
+      
 ## At least one authentication method must be specified
 ## Authentication_priority corresponds to extention-priority 
 ## (see https://guacamole.apache.org/doc/gug/configuring-guacamole.html#initial-setup)
