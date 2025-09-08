@@ -12,6 +12,9 @@ The major modifications are:
 
 ### Prerequisites
 
+The [CNPG operator](https://github.com/cloudnative-pg/charts/tree/main/charts/cluster#installing-the-operator)
+MUST be installed in the cluster.
+
 Secret with name corresponding to [bindSecret](https://github.com/reprostat/helm-guacamole/blob/a28474f0a75fdf15315e4a00f9ed35c63030c0ab/values.yaml#L39) 
 and keys corresponding to specific [LDAP environmental variables](https://guacamole.apache.org/doc/gug/guacamole-docker.html#guacamole-docker-ldap-required-vars)
  - _LDAP_bindDN_: corresponds to `LDAP_SEARCH_BIND_DN`
