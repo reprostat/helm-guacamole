@@ -69,7 +69,7 @@ spec:
 
           {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
             - name: POSTGRESQL_HOSTNAME
-              value: {{ (printf "%s-postgresql" .Release.Name) | default .Values.authentication.database.hostname }}
+              value: {{ (printf "%s-postgresql-rw" .Release.Name) | default .Values.authentication.database.hostname }}
           {{- if .Values.authentication.database.port }}
             - name: POSTGRESQL_PORT
               value: {{ .Values.authentication.database.port | quote }}
