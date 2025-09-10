@@ -82,7 +82,7 @@ spec:
           {{- end }}
             - name: POSTGRESQL_SSL_MODE
               value: {{ .Values.postgresql.cluster.sslMode | default "verify-full" }}
-            - name: POSTGRESQL_CA_CERT_FILE
+            - name: POSTGRESQL_SSL_ROOT_CERT_FILE
               value: /opt/guacamole/certs/postgresql-ca.crt
             - name: POSTGRESQL_DATABASE
               value: {{ .Values.postgresql.cluster.initdb.database | default .Values.authentication.database.database }}
