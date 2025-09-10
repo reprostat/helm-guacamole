@@ -797,69 +797,7 @@ data:
     JOIN guacamole_entity affected ON permissions.affected_username = affected.name AND guacamole_entity.type = 'USER'
     JOIN guacamole_user            ON guacamole_user.entity_id = affected.entity_id;
 
-    -- Set ownership of all tables
-    ALTER TABLE guacamole_connection OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_connection_attribute OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_connection_group OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_connection_group_attribute OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_connection_group_permission OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_connection_history OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_connection_parameter OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_connection_permission OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_entity OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_sharing_profile OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_sharing_profile_attribute OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_sharing_profile_parameter OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_sharing_profile_permission OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_system_permission OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user_attribute OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user_group OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user_group_attribute OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user_group_member OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user_group_permission OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user_history OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user_password_history OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TABLE guacamole_user_permission OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-
-    -- Set ownership of all custom types
-    ALTER TYPE guacamole_connection_group_type OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TYPE guacamole_entity_type OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TYPE guacamole_object_permission_type OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TYPE guacamole_system_permission_type OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER TYPE guacamole_proxy_encryption_method OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-
-    -- Set ownership of all indices
-    ALTER INDEX guacamole_connection_group_parent_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_parent_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_sharing_profile_primary_connection_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_parameter_connection_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_sharing_profile_parameter_sharing_profile_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_attribute_user_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_group_attribute_user_group_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_attribute_connection_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_group_attribute_connection_group_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_sharing_profile_attribute_sharing_profile_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_permission_connection_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_permission_entity_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_group_permission_connection_group_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_group_permission_entity_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_sharing_profile_permission_sharing_profile_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_sharing_profile_permission_entity_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_system_permission_entity_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_permission_affected_user_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_permission_entity_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_group_permission_affected_user_group_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_group_permission_entity_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_history_user_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_history_connection_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_history_sharing_profile_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_history_start_date OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_history_end_date OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_connection_history_connection_id_start_date OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_history_user_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_history_start_date OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_history_end_date OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_history_user_id_start_date OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
-    ALTER INDEX guacamole_user_password_history_user_id OWNER TO {{ .Values.postgresql.cluster.initdb.owner }};
+    -- Grant Guacamole access to the database
+    GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {{ .Values.postgresql.cluster.initdb.owner }};
+    GRANT SELECT,USAGE ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.postgresql.cluster.initdb.owner }};
 {{- end }}

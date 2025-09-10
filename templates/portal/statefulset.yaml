@@ -30,6 +30,12 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.portal.persistence.existingClaim }}
       {{- end }}
+      {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
+        - name: postgresql-ca
+          secret:
+            secretName: {{ .Release.Name }}-postgresql-ca
+            defaultMode: 0600
+      {{- end }}
       {{- if and (hasKey .Values.authentication "ldap") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
         - name: ldap-tls
           secret:
@@ -74,6 +80,10 @@ spec:
             - name: POSTGRESQL_PORT
               value: {{ .Values.authentication.database.port | quote }}
           {{- end }}
+            - name: POSTGRESQL_SSL_MODE
+              value: {{ .Values.postgresql.cluster.sslMode | default "verify-full" }}
+            - name: POSTGRESQL_CA_CERT_FILE
+              value: /opt/guacamole/certs/postgresql-ca.crt
             - name: POSTGRESQL_DATABASE
               value: {{ .Values.postgresql.cluster.initdb.database | default .Values.authentication.database.database }}
             - name: POSTGRESQL_USERNAME
@@ -206,11 +216,17 @@ spec:
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
           {{- end }}
 
-          {{- if or .Values.portal.persistence.enabled (and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls"))) .Values.portal.extraVolumeMounts }}
+          {{- if or .Values.portal.persistence.enabled (and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres")) (and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls"))) .Values.portal.extraVolumeMounts }}
           volumeMounts:
           {{- if .Values.portal.persistence.enabled }}
             - name: data
               mountPath: /webapps
+          {{- end }}
+          {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
+            - name: postgresql-ca
+              mountPath: /opt/guacamole/certs/postgresql-ca.crt
+              subPath: ca.crt
+              readOnly: true
           {{- end }}
           {{- if and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls")) }}
             - name: ldap-tls
