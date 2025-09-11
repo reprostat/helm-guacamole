@@ -1,10 +1,10 @@
-{{- if .Values.postgresql.enabled }}
+{{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ (mustFirst  .Values.postgresql.cluster.initdb.postInitApplicationSQLRefs.configMapRefs).name }}
+  name: {{ include "guacamole.database.fullname" . }}-initdb
 data:
-  {{ (mustFirst  .Values.postgresql.cluster.initdb.postInitApplicationSQLRefs.configMapRefs).key }}: |
+  initdb.sql: |
     -- Licensed to the Apache Software Foundation (ASF) under one
     -- or more contributor license agreements.  See the NOTICE file
     -- distributed with this work for additional information

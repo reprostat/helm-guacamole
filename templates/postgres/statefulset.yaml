@@ -1,0 +1,94 @@
+{{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
+apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
+kind: StatefulSet
+metadata:
+  name: {{ include "guacamole.database.fullname" . }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: {{ include "guacamole.database.fullname" . }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1 
+  selector:
+    matchLabels: {{ include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: {{ include "guacamole.database.fullname" . }}
+  template:
+    metadata:
+      labels:  {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: {{ include "guacamole.database.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ include "guacamole.database.fullname" . }}
+        
+      volumes:
+      {{- if .Values.authentication.database.storage.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.authentication.database.storage.existingClaim }}
+      {{- end }}
+        - name: initdb
+          configMap:
+            name: {{ include "guacamole.database.fullname" . }}-initdb
+
+      {{- if .Values.global.imagePullSecret }}
+      imagePullSecrets:
+      {{- range .Values.global.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 30       
+      containers:
+        - name: database
+          image: {{ .Values.authentication.database.image.repository }}:{{ default .Chart.AppVersion .Values.database.image.tag }}
+          imagePullPolicy: {{ .Values.authentication.database.image.pullPolicy | quote }}
+          {{- if .Values.containerSecurityContext.enabled }}
+          securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+         
+          resources:
+            {{- toYaml .Values.authentication.database.resources | nindent 12 }}
+
+          ports:
+            - containerPort: {{ .Values.authentication.database.port }}
+              name: database
+              protocol: TCP
+
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+            - name: initdb
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+
+      {{- if .Values.hostAliases }}
+      hostAliases:
+      {{ toYaml .Values.hostAliases | nindent 8 }}
+      {{- end }}
+
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+        {{- range $key, $value := .Values.authentication.database.storage.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.authentication.database.storage.size | quote }}
+      {{- if .Values.authentication.database.storage.storageClass }}
+      {{- if (eq "-" .Values.authentication.database.storage.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.authentication.database.storage.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- end }}

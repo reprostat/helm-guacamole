@@ -1,9 +1,9 @@
 apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
-  name: {{ template "guacamole.portal.fullname" . }}
+  name: {{ include "guacamole.portal.fullname" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
-    app.kubernetes.io/component: {{ template "guacamole.portal.fullname" . }}
+    app.kubernetes.io/component: {{ include "guacamole.portal.fullname" . }}
     release: {{ .Release.Name }}
 spec:
   {{- if not .Values.portal.autoscaling.enabled }}
@@ -11,11 +11,11 @@ spec:
   {{- end }}  
   selector:
     matchLabels: {{ include "common.labels.matchLabels" . | nindent 6 }}
-      app.kubernetes.io/component: {{ template "guacamole.portal.fullname" . }}
+      app.kubernetes.io/component: {{ include "guacamole.portal.fullname" . }}
   template:
     metadata:
       labels:  {{- include "common.labels.standard" . | nindent 8 }}
-        app.kubernetes.io/component: {{ template "guacamole.portal.fullname" . }}
+        app.kubernetes.io/component: {{ include "guacamole.portal.fullname" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "guacamole.portal.fullname" . }}
@@ -29,12 +29,6 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: {{ .Values.portal.persistence.existingClaim }}
-      {{- end }}
-      {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
-        - name: postgresql-ca
-          secret:
-            secretName: {{ .Release.Name }}-postgresql-ca
-            defaultMode: 0600
       {{- end }}
       {{- if and (hasKey .Values.authentication "ldap") (eq .Values.authentication.ldap.encryptionMethod "starttls") }}
         - name: ldap-tls
@@ -64,7 +58,7 @@ spec:
           {{- end }}          
           env:
             - name: GUACD_HOSTNAME
-              value: {{ printf "%s-deamon" .Release.Name }}
+              value: {{ include "guacamole.daemon.fullname" . }}
             - name: JAVA_OPTS
               value: "-Xms512m -Xmx2048m -Xss1024k -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
 
@@ -75,31 +69,25 @@ spec:
 
           {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
             - name: POSTGRESQL_HOSTNAME
-              value: {{ (printf "%s-postgresql-rw" .Release.Name) | default .Values.authentication.database.hostname }}
-          {{- if .Values.authentication.database.port }}
+              value: {{ .Values.authentication.database.hostname | default (include "guacamole.database.fullname" .) }}
             - name: POSTGRESQL_PORT
-              value: {{ .Values.authentication.database.port | quote }}
-          {{- end }}
-            - name: POSTGRESQL_SSL_MODE
-              value: {{ .Values.authentication.database.sslMode | default "prefer" }}
-            - name: POSTGRESQL_SSL_ROOT_CERT_FILE
-              value: /opt/guacamole/certs/postgresql-ca.crt
+              value: {{ .Values.authentication.database.service.port | quote }}
             - name: POSTGRESQL_DATABASE
-              value: {{ .Values.postgresql.cluster.initdb.database | default .Values.authentication.database.database }}
+              value: {{ .Values.authentication.database.database }}
             - name: POSTGRESQL_USERNAME
-              value: {{ .Values.postgresql.cluster.initdb.owner | default .Values.authentication.database.username }}
+              value: {{ .Values.authentication.database.username }}
             - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgresql.cluster.initdb.secret.name | default ((.Values.authentication.database.password).secret) }}
-                  key: {{ (((.Values.authentication.database).password).key) | default "password" }}
+                  name: {{ (.Values.authentication.database.password).secret }}
+                  key: {{ (.Values.authentication.database).password).key }}
             - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
               value: "true"
           {{- end }}
 
           {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "mysql") }}
             - name: MYSQL_HOSTNAME
-              value: {{ (printf "%s-mysql" .Release.Name) | default .Values.authentication.database.hostname }}
+              value: {{ default .Values.authentication.database.hostname | default (include "guacamole.database.fullname" .) }}
           {{- if .Values.authentication.database.port }}
             - name: MYSQL_PORT
               value: {{ .Values.authentication.database.port | quote }}
@@ -221,12 +209,6 @@ spec:
           {{- if .Values.portal.persistence.enabled }}
             - name: data
               mountPath: /webapps
-          {{- end }}
-          {{- if and (hasKey .Values.authentication "database") (eq .Values.authentication.database.type "postgres") }}
-            - name: postgresql-ca
-              mountPath: /opt/guacamole/certs/postgresql-ca.crt
-              subPath: ca.crt
-              readOnly: true
           {{- end }}
           {{- if and (hasKey .Values.authentication "ldap") (or (eq .Values.authentication.ldap.encryptionMethod "ssl") (eq .Values.authentication.ldap.encryptionMethod "starttls")) }}
             - name: ldap-tls

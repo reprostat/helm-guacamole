@@ -1,9 +1,9 @@
 apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
-  name: {{ template "guacamole.daemon.fullname" . }}
+  name: {{ include "guacamole.daemon.fullname" . }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
-    app.kubernetes.io/component: {{ template "guacamole.daemon.fullname" . }}
+    app.kubernetes.io/component: {{ include "guacamole.daemon.fullname" . }}
     release: {{ .Release.Name }}
 spec:
   {{- if not .Values.daemon.autoscaling.enabled }}
@@ -11,11 +11,11 @@ spec:
   {{- end }}  
   selector:
     matchLabels: {{ include "common.labels.matchLabels" . | nindent 6 }}
-      app.kubernetes.io/component: {{ template "guacamole.daemon.fullname" . }}
+      app.kubernetes.io/component: {{ include "guacamole.daemon.fullname" . }}
   template:
     metadata:
       labels:  {{- include "common.labels.standard" . | nindent 8 }}
-        app.kubernetes.io/component: {{ template "guacamole.daemon.fullname" . }}
+        app.kubernetes.io/component: {{ include "guacamole.daemon.fullname" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ include "guacamole.daemon.fullname" . }}

@@ -27,23 +27,23 @@ containerSecurityContext:
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 20
+  initialDelaySeconds: 10
   periodSeconds: 10
-  timeoutSeconds: 1
+  timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 10
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 20
+  initialDelaySeconds: 10
   periodSeconds: 10
-  timeoutSeconds: 1
+  timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 10
 startupProbe:
   enabled: true
   initialDelaySeconds: 0
   periodSeconds: 10
-  timeoutSeconds: 1
+  timeoutSeconds: 5
   successThreshold: 1
   failureThreshold: 30
 
@@ -165,48 +165,6 @@ portal:
     tls:
       enabled: false
       secretName: guacamole-tls
-
-## PostgreSQL chart configuration
-## ref: https://github.com/cloudnative-pg/charts/blob/main/charts/cluster/values.yaml
-## @param postgresql.enabled Switch to enable or disable the PostgreSQL helm chart
-## @param postgresql.cluster.initdb.owner Name for a custom user to create
-## @param postgresql.cluster.initdb.database Name for a custom database to create
-## @param postgresql.cluster.initdb.secret.name points to a basic-auth secret with 'username' matching @param postgresql.cluster.initdb.owner
-## @param postgresql.cluster.initdb.postInitApplicationSQLRefs.configMapRefs MUST have at least one entry corresponding to the bundled SQL script to initialize the guacamole database schema
-##
-## postgresql:
-##   enabled: true
-##   version:
-##     postgresql: "17"
-##   backups:
-##     enabled: false
-##   cluster:
-##     imageName: ghcr.io/cloudnative-pg/postgresql:17.6-standard-bookworm
-##     instances: 1
-##     resources:
-##       requests:
-##         cpu: 500m
-##         memory: 512Mi      
-##       limits:
-##         cpu: 750m
-##         memory: 768Mi
-##     storage:
-##       storageClass: longhorn-encrypted
-##       size: 1Gi
-##     initdb:
-##       database: guacamole
-##       owner: guacamole_user
-##       secret:
-##         name: postgresql-secret
-##       postInitApplicationSQLRefs:
-##         configMapRefs:
-##           - name: guacamole-initdb
-##             key: initdb.sql
-##     postgresql:
-##       parameters:
-##         max_connections: 200
-##     monitoring:
-##       enabled: true
       
 ## At least one authentication method must be specified
 ## Authentication_priority corresponds to extention-priority 
@@ -218,17 +176,40 @@ authentication:
 ##    - oidc
 ##    - database
 ## For database authentication, <database.type>.enabled must be set to true.
-## database:
-##   type: postgres
-## For internal database, connection parameters will be used from <database.type>.
-## For external database, connection parameters must be set here.
-##   hostname: "guacamole-postgresql"
-##   port: "5432"
-##   database: "guacamole"
-##   username: "guacamole"
-##   password:
-##     secret: "guacamole-db"
-##     key: "userPassword"
+## For external database, non-empty hostname MUST be provided.
+## For internal database, hostname is ignored.
+##  database:
+##    type: postgres
+##    hostname: "guacamole-postgresql"
+##
+## PostgreSQL chart configuration
+##    image:
+##      repository: postgres
+##      tag: 17.6-alpine
+##    resources:
+##      requests:
+##        cpu: 500m
+##        memory: 512Mi      
+##      limits:
+##        cpu: 750m
+##        memory: 768Mi
+##    storage:
+##      existingClaim: ""
+##      annotations: {}
+##      storageClass: longhorn-encrypted
+##      size: 1Gi
+##    postgresql:
+##      parameters:
+##        max_connections: 200
+##    port: 5432 
+##    service:
+##      port: 5432
+##
+##    database: "guacamole"
+##    username: "guacamole"
+##    password:
+##      secret: "guacamole-db"
+##      key: "userPassword"
 ##
 ##  ldap:
 ##    hostname: ldap.local

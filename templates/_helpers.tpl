@@ -15,3 +15,12 @@
 {{- printf "%s-%s-portal" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end }}
+
+{{- define "guacamole.database.fullname" -}}
+{{- $name := default .Release.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-%s" .Release.Name .Values.authentication.database.type | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s-%s" .Release.Name $name .Values.authentication.database.type | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end }}

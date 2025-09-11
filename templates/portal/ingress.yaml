@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:  
-  name: portal
+  name: {{ include "guacamole.portal.fullname" . }}
   annotations:
     nginx.ingress.kubernetes.io/app-root: /guacamole
     {{ if .Values.portal.ingress.annotations }}          
@@ -18,7 +18,7 @@ spec:
             path: /            
             backend:
               service:
-                name: {{ printf "%s-portal" .Release.Name }}
+                name: {{ include "guacamole.portal.fullname" . }}
                 port:
                   number: {{ .Values.portal.service.port }}
             
