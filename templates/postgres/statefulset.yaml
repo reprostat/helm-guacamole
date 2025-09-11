@@ -41,7 +41,7 @@ spec:
       terminationGracePeriodSeconds: 30       
       containers:
         - name: database
-          image: {{ .Values.authentication.database.image.repository }}:{{ default .Chart.AppVersion .Values.database.image.tag }}
+          image: {{ .Values.authentication.database.image.repository }}:{{ default .Chart.AppVersion .Values.authentication.database.image.tag }}
           imagePullPolicy: {{ .Values.authentication.database.image.pullPolicy | quote }}
           {{- if .Values.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}

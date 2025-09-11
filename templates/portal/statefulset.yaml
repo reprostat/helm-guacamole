@@ -71,7 +71,7 @@ spec:
             - name: POSTGRESQL_HOSTNAME
               value: {{ .Values.authentication.database.hostname | default (include "guacamole.database.fullname" .) }}
             - name: POSTGRESQL_PORT
-              value: {{ .Values.authentication.database.service.port | quote }}
+              value: {{ (.Values.authentication.database.service).port | default 5432 | quote }}
             - name: POSTGRESQL_DATABASE
               value: {{ .Values.authentication.database.database }}
             - name: POSTGRESQL_USERNAME
@@ -79,8 +79,8 @@ spec:
             - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ (.Values.authentication.database.password).secret }}
-                  key: {{ (.Values.authentication.database).password).key }}
+                  name: {{ .Values.authentication.database.password.secret }}
+                  key: {{ .Values.authentication.database.password.key }}
             - name: POSTGRESQL_AUTO_CREATE_ACCOUNTS
               value: "true"
           {{- end }}

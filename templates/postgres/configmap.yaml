@@ -798,6 +798,6 @@ data:
     JOIN guacamole_user            ON guacamole_user.entity_id = affected.entity_id;
 
     -- Grant Guacamole access to the database
-    GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {{ .Values.postgresql.cluster.initdb.owner }};
-    GRANT SELECT,USAGE ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.postgresql.cluster.initdb.owner }};
+    GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {{ .Values.authentication.database.username }};
+    GRANT SELECT,USAGE ON ALL SEQUENCES IN SCHEMA public TO {{ .Values.authentication.database.username }};
 {{- end }}
