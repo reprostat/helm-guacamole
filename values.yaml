@@ -202,8 +202,6 @@ authentication:
 ##      parameters:
 ##        max_connections: 200
 ##    port: 5432 
-##    service:
-##      port: 5432
 ##
 ##    database: "guacamole"
 ##    username: "guacamole"
