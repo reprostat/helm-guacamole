@@ -68,6 +68,15 @@ spec:
                 secretKeyRef:
                   name: {{ include "guacamole.database.fullname" . }}-superuser
                   key: password
+            - name: POSTGRES_DB
+              value: {{ .Values.authentication.database.database | quote }}
+            - name: POSTGRES_DB_USER
+              value: {{ .Values.authentication.database.username | quote }}
+            - name: POSTGRES_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.authentication.database.password.secret }}
+                  key: {{ .Values.authentication.database.password.key }}
 
           volumeMounts:
             - name: data
