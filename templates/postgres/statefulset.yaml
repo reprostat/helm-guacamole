@@ -58,7 +58,17 @@ spec:
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
-          
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "guacamole.database.fullname" . }}-superuser
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "guacamole.database.fullname" . }}-superuser
+                  key: password
+                  
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql/data

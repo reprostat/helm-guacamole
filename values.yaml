@@ -201,6 +201,10 @@ authentication:
 ##    postgresql:
 ##      parameters:
 ##        max_connections: 200
+## If using an existing secret for superuser credentials, the secret MUST follow the basic-auth format.
+## If no existing secret is provided, a new secret will be created with username "postgres" and a random password.
+##      superuser:
+##        secret: postgresql-superuser
 ##    port: 5432 
 ##
 ##    database: "guacamole"
