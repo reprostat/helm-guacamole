@@ -800,7 +800,7 @@ data:
     #!/usr/bin/env bash
     set -e
 
-    TMPFILE=$(mktemp /tmp/initguac-XXXXXX.sql)
+    TMPFILE=$(mktemp -u /tmp/initguac-XXXXXX).sql
 
     cat <<EOF > "$TMPFILE"
       -- Create Guacamole user
