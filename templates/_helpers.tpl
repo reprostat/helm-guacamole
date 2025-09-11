@@ -24,3 +24,7 @@
 {{- printf "%s-%s-%s" .Release.Name $name .Values.authentication.database.type | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end }}
+
+{{- define "postgres.port" -}}
+{{- printf "%d" (.Values.authentication.database.port | default 5432) -}}
+{{- end}}

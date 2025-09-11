@@ -51,7 +51,7 @@ spec:
             {{- toYaml .Values.authentication.database.resources | nindent 12 }}
 
           ports:
-            - containerPort: {{ .Values.authentication.database.port }}
+            - containerPort: {{ include "postgres.port" . }}
               name: database
               protocol: TCP
 

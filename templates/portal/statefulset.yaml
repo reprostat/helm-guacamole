@@ -71,7 +71,7 @@ spec:
             - name: POSTGRESQL_HOSTNAME
               value: {{ .Values.authentication.database.hostname | default (include "guacamole.database.fullname" .) }}
             - name: POSTGRESQL_PORT
-              value: {{ (.Values.authentication.database.service).port | default 5432 | quote }}
+              value: {{ include "postgres.port" . | quote }}
             - name: POSTGRESQL_DATABASE
               value: {{ .Values.authentication.database.database }}
             - name: POSTGRESQL_USERNAME

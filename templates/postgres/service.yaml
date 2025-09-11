@@ -14,7 +14,7 @@ spec:
     app.kubernetes.io/component: {{ include "guacamole.database.fullname" . }}
   ports:
   - name: database
-    port: {{ (.Values.authentication.database.service).port | default 5432 }}
+    port: {{ include "postgres.port" . }}
     protocol: TCP
-    targetPort: {{ .Values.authentication.database.port | default 5432 }}
+    targetPort: {{ include "postgres.port" . }}
 {{- end }}    
