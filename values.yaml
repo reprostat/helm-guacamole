@@ -134,6 +134,13 @@ portal:
       ##   - type: Pods
       ##     value: 2
       ##     periodSeconds: 60
+  ## @param extraEnvVars Extra environment variables to be set on portal container
+  ## Example:
+  ## extraEnvVars:
+  ##   - name: FOO
+  ##     value: "bar"
+  ##
+  extraEnvVars: []  
   ## @param extraVolumes Optionally specify extra list of additional volumes for the portal pod(s)
   ##
   extraVolumes: []

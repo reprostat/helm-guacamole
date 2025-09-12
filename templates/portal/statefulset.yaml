@@ -176,6 +176,9 @@ spec:
             - name: WEBAPPS_BASE
               value: /webapps
           {{- end }}
+          {{- if .Values.portal.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraEnvVars "context" .) | nindent 12 }}
+          {{- end }}
 
           resources:
           {{- toYaml .Values.portal.resources | nindent 12 }}
